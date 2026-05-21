@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Ahorcado Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"></head>
+  <body>
+    <div id="pantalla-menu">
+    <h1>Ahorcado...</h1>
+    <p>Elige tu destino:</p>  
+    <button id="btnSistema">Jugar contra el sistema</button>  
+    <br><button id="btnAmigo">Jugar contra un Amigo</button>
+    </div>
+
+    <div id="pantalla-palabra" class="oculto">
+    <br><br><h3>Escribe la sentencia:</h3>  
+    <input type="password" id="inputPalabra" placeholder="Asegurate de que nadie vea">  
+    <br><br><button id="btnEmpezar">¡Que Empiece el Juego!</button>
+    </div>
+
+    <div id="pantalla-juego" class="oculto">  
+    <h3 id="iniciaJuego">Adivina la palabra, o ¡muere!</h3>
+    <pre id="dibujoAhorcado"></pre>  
+    <h1 id="lineasPalabra"></h1>    
+    <input type="text" id="inputLetra" maxlength="1">
+    <br><br><button id="btnAdivinar">Adivinar</button>  
+    <button id="btnReiniciar" class="oculto"></button>     
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
