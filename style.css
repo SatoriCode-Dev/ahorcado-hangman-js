@@ -6,6 +6,10 @@ body {
   padding: 20px;  
   width: 90%;
   max-width: 400px;
+  margin: 0 auto; /* Esto centra tu juego en la pantalla si lo abres en PC */
+  height: 100vh; /* 'vh' significa Viewport Height. 100vh es el 100% de la altura visible de la pantalla */
+  overflow: hidden; /* Si algo se sale de los 100vh, se esconde, sin scroll */
+  box-sizing: border-box; /* Esto hace que el 'padding' que ya tenías empuje hacia adentro y no rompa el 100vh */
 }
 
 h1 {
@@ -26,6 +30,48 @@ button {
   cursor: pointer;
 }
 
+.texto-terror {
+    color: #ff3333;
+    font-weight: bold;
+    text-shadow: 0px 0px 8px #ff0000;
+}
+
+#iniciaJuego {
+  color: #ff3333;
+  text-shadow: 0px 0px 8px #ff0000;
+}
+
+#lineasPalabra {
+  color: #ff3333;
+  text-shadow: 0px 0px 8px #ff0000;
+}
+
+#inputLetra {
+  color: #ff3333;
+  text-shadow: 0px 0px 8px #ff0000;
+}
+
+#modal-overlay {
+    position: fixed; /* Se queda fijo en la pantalla aunque bajes */
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Fondo negro al 85% de oscuridad */
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de TODO */
+}
+
+#modal-caja {
+    background-color: #1a1a1a;
+    border: 2px solid #8b0000;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0px 0px 20px #ff00004a; /* Un brillo rojo macabro */
+}
+
 button:hover {
   background-color: #8b0000;
 }
@@ -39,11 +85,77 @@ input {
 }
 
 .oculto {
-  display: none;
+  display: none !important;
 }
 
 #dibujoAhorcado {
-    color: #8b0000; 
+    color: #ff3333; 
     font-weight: bold; 
-    text-shadow: 1px 1px 5px #ff00007a; 
+    text-shadow: 1px 1px 5px #ff0000; 
+}
+
+#dibujoMenu {
+  color: #8b0000; 
+    font-weight: bold; 
+    text-shadow: 1px 1px 5px #ff0000;
+    margin-top: 20px;
+    font-size: 28px; 
+    line-height: 1.2
+}
+
+#mensajeSistema {
+    opacity: 0; /* Opacidad cero. Es invisible */
+    transition: opacity 2s ease; /* Cualquier cambio en la opacidad se hace suavemente */
+    height: 20px; /* Le damos una altura fija para que la pantalla no salte cuando aparezca el texto */
+    color: #ff3333;
+    font-weight: bold;    
+}
+
+#mensajeSistema.mostrar-mensaje {
+    opacity: 1; /* Opacidad al 100% */
+}
+
+#cajaVidas {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#cajaTiempo {
+    position: absolute;
+    top: 20px;
+    left: 20px; /* Lo enviamos a la izquierda */
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #dfdede;
+}
+
+#letrasUsadasTexto {
+  color: #ff3333;
+}
+
+/* La orden de animación */
+.latido-corazon {
+    animation: latir 1s infinite; /* 'infinite' hace que nunca se detenga */
+}
+
+/* Los planos de cómo se ve el latido (Fotogramas clave) */
+@keyframes latir {
+    0% { transform: scale(1); text-shadow: 1px 1px 5px #ff00007a; }
+    50% { transform: scale(1.05); text-shadow: 0px 0px 15px #ff0000; color: #ff3333; }
+    100% { transform: scale(1); text-shadow: 1px 1px 5px #ff00007a; }
+}
+
+.pantalla-temblando {
+    animation: temblor 0.4s ease;
+}
+
+@keyframes temblor {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
 }

@@ -6,11 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css"></head>
   <body>
+    <div id="modal-overlay">
+    <div id="modal-caja">
+        <h2 id="modal-titulo">Título</h2>
+        <p id="modal-mensaje">Mensaje</p>
+        <button id="modal-btn">Aceptar</button>
+    </div>
+    </div>
+    
     <div id="pantalla-menu">
     <h1>Ahorcado...</h1>
     <p>Elige tu destino:</p>  
     <button id="btnSistema">Jugar contra el sistema</button>  
     <br><button id="btnAmigo">Jugar contra un Amigo</button>
+    <pre id="dibujoMenu"></pre>
     </div>
 
     <div id="pantalla-palabra" class="oculto">
@@ -23,9 +32,13 @@
     <h3 id="iniciaJuego">Adivina la palabra, o ¡muere!</h3>
     <pre id="dibujoAhorcado"></pre>  
     <h1 id="lineasPalabra"></h1>    
-    <input type="text" id="inputLetra" maxlength="1">
+    <input type="text" id="inputLetra" maxlength="1">    
     <br><br><button id="btnAdivinar">Adivinar</button>  
-    <button id="btnReiniciar" class="oculto"></button>     
+    <button id="btnReiniciar" class="oculto"></button>
+    <p id="mensajeSistema"></p>
+    <p id="cajaTiempo">Tiempo: <span id="tiempoRestante">60</span></p>
+    <p id="cajaVidas">Turnos: <span id="contadorVidas">7</span></p>
+    <p id="letrasUsadasTexto">Letras en el purgatorio: </p>     
     </div>
 
     <script src="script.js"></script>
