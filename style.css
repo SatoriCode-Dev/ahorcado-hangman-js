@@ -1,75 +1,534 @@
+@font-face {
+  font-family: 'FuenteTerror';
+  src: url('Tipografía/ITC Serif Gothic Std Heavy.otf') format('truetype'); 
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir';
+    src: url('Tipografía/CinzelDecorative-Bold.ttf') format('truetype');    
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir2';
+    src: url('Tipografía/ShareTechMono-Regular.ttf') format('truetype');    
+}
+
+.fuente-principal {
+  font-family: 'MaquinaEscribir', sans-serif;
+}
+
 body {
   background-color: #0a0a0a;
   color: #e0e0e0;  
-  font-size: 22px;
+  font-family: 'FuenteTerror', sans-serif;
+  font-size: 4.5vw;
   text-align: center;
   padding: 20px;  
+  padding-top: 45px;
   width: 90%;
   max-width: 400px;
-  margin: 0 auto; /* Esto centra tu juego en la pantalla si lo abres en PC */
+  margin: 0 auto; /* Esto centra el juego en la pantalla si se abre en PC */
   height: 100vh; /* 'vh' significa Viewport Height. 100vh es el 100% de la altura visible de la pantalla */
   overflow: hidden; /* Si algo se sale de los 100vh, se esconde, sin scroll */
-  box-sizing: border-box; /* Esto hace que el 'padding' que ya tenías empuje hacia adentro y no rompa el 100vh */
+  box-sizing: border-box; /* Esto hace que el padding empuje hacia adentro y no rompa el 100vh */
+  min-height: 100dvh; /* 'dvh' (Dynamic Viewport Height) se adapta automáticamente a la interfaz de Android/iOS */
+  overflow-x: hidden; /* Solo bloqueamos el scroll horizontal, pero permitimos que el juego crezca hacia abajo si lo necesita */
+}
+
+/* La barra que soluciona el problema de los espacios en PC y Celular */
+.barra-superior {
+  position: absolute; /* Se independiza del flujo normal de la página */
+  top: 0;          /* Distancia desde el techo de la pantalla */
+  left: 0;            /* Pegado a la pared izquierda absoluta */
+  display: flex;
+  justify-content: space-between; /* Envía un elemento a cada extremo */
+  width: 100vw;
+  padding: 0 0;
+  box-sizing: border-box;
+  margin-bottom:10px;  
+  z-index: 100;       /* Asegura que flote por encima de todo */
+}
+
+.btn-icono {
+  font-family: 'MaquinaEscribir2', monospace;
+  color: #666666;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.7; /* Ligeramente transparentes para no robar atención */
+  transition: opacity 0.3s ease;
+}
+
+.btn-icono:hover {
+    opacity: 1; /* Se iluminan al pasar el mouse */
+}
+
+#pantalla-menu h1 {    
+  animation: respiracionAbismo 4s infinite ease-in-out; /* 4 segundos de ciclo suave */
+  margin-bottom: 20px;
+  font-family: 'MaquinaEscribir', sans-serif;
+}
+
+#pantalla-juego h3 {
+  font-family: 'MaquinaEscribir', sans-serif;
+  color: #ff3333;
+  text-shadow: 2px 2px 4px #7e2121; 
+  font-size: 8vw;
+  line-height: 0;  
+}
+
+/* Creamos la coreografía del pulso */
+@keyframes latidoSiniestro {
+    0% { 
+        text-shadow: 0 0 5px #2b0000, 0 0 10px #2b0000; 
+        transform: scale(1); 
+    }
+    50% { 
+        /* En la mitad del tiempo, el brillo explota y el texto crece un 2% */
+        text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 45px #cc0000; 
+        transform: scale(1); 
+    }
+    100% { 
+        text-shadow: 0 0 5px #2b0000, 0 0 10px #2b0000; 
+        transform: scale(1); 
+    }
+}
+
+.efecto-latido {
+    /* Ejecuta la animación en un ciclo infinito y suave de 3 segundos */
+    animation: latidoSiniestro 3s infinite ease-in-out;
+}
+
+/* Creamos la coreografía del pulso */
+@keyframes salvadoSiniestro {
+    0% {
+        /* Rojo puro centrado */
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #cc0000;
+    }
+    33% {
+        /* Se desplaza un milímetro a la derecha, tonos un poco más anaranjados/claros */
+        text-shadow: 2px 0 12px #ff3333, 0 0 25px #ff1a1a, 0 0 35px #990000;
+    }
+    66% {
+        /* Se desplaza a la izquierda, tonos más oscuros y profundos */
+        text-shadow: -2px 0 15px #e60000, 0 0 22px #cc0000, 0 0 40px #660000;
+    }
+    100% {
+        /* Vuelve al inicio para un ciclo perfecto */
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #cc0000;
+    }
+}
+
+.efecto-salvado {
+    /* Ejecuta la animación en un ciclo infinito y suave de 3 segundos */
+    animation: salvadoSiniestro 2.5s infinite ease-in-out;
+}
+
+@keyframes parpadeoFantasma {
+    0%, 100% { opacity: 1; text-shadow: 0 0 5px #ff0000, 0 0 10px #8b0000; }
+    2%  { opacity: 0.1; text-shadow: none; } /* Apagón brusco */
+    4%  { opacity: 1;   text-shadow: 0 0 5px #ff0000, 0 0 10px #8b0000; } /* Vuelve */
+    5%  { opacity: 0.1; text-shadow: none; } /* Parpadeo rápido */
+    6%  { opacity: 1;   text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; } /* Chispazo más fuerte */
+    8%  { opacity: 0.5; text-shadow: 0 0 2px #ff0000; }
+    10% { opacity: 1;   text-shadow: 0 0 5px #ff0000, 0 0 10px #8b0000; }
+    /* Del 10% al 100% se queda encendido de forma estable */ } 
+
+
+#pantalla-juego.estado-jugando h3 {
+  font-family: 'FuenteTerror', sans-serif;
+  text-shadow: 2px 2px 4px #ff0000, -2px -1px 6px #ff0000; 
+  font-size: 7vw;
+  margin-bottom: 15px;
+  margin-top: 1px;
+  
+  animation: parpadeoFantasma 30s infinite;
+  }
+
+/* El fotograma clave de la respiración */
+@keyframes respiracionAbismo {
+    0% { transform: scale(1); text-shadow: 2px 2px 4px #7e2121; }
+    50% { transform: scale(1.04); text-shadow: 0 0 25px #ff0000; color: #ff1a1a; }
+    100% { transform: scale(1); text-shadow: 2px 2px 4px #7e2121; }
+}
+
+/* Creamos la coreografía para mover el fondo */
+@keyframes sangreHirviendo {
+    0% { background-position: 0% center; }
+    100% { background-position: -200% center; }
+}
+
+/* La clase para tu palabra de victoria */
+.efecto-fuego-interno2 {
+    /* Hacemos el interior transparente y le ponemos el degradado animado */
+    color: transparent !important;
+    background-image: linear-gradient(90deg, #ff0000 0%, #ff6600 25%, #cc0000 50%, #ff0000 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Le dejamos un borde sutil para que no se pierda la forma */
+    -webkit-text-stroke: 1px rgba(255, 0, 0, 0.5);
+    
+    /* Llamamos a las DOS animaciones al mismo tiempo */
+    animation: sangreHirviendo 3s linear infinite, 
+               salvadoSiniestro 3s infinite ease-in-out;
+}
+
+/* 1. Animación suave con los colores de las letras ganadoras */
+@keyframes resplandorCian {
+    0% { 
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; 
+    }
+    50% { 
+        text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #008080; 
+    }
+    100% { 
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; 
+    }
+}
+
+.efecto-fuego-interno {
+    /* Limpiamos cualquier efecto viejo de fondo */
+    background-image: none !important; 
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-stroke: 0 transparent !important;
+    
+    /* Le damos el color exacto de las letras ganadoras */
+    color: #ffffff !important;
+    animation: resplandorCian 3s infinite ease-in-out;
+}
+
+.btn-primario, .btn-secundario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 85%; /* Para que todos tengan el mismo ancho */
+    margin: 1px auto;
+    padding: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.subtitulo {
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin-top: 1px;
+    opacity: 0.6;
+}
+
+.btn-primario {
+    background-color: #8b0000;
+    color: white;
+    border: 2px solid #ff0000;
+}
+
+.btn-primario:hover {
+    background-color: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); /* Un brillo demoníaco */
+}
+
+.btn-secundario {
+    background-color: transparent;
+    color: #666666;
+    border: 1px solid #555;
+}
+
+.btn-secundario:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #888;
+}
+
+.frase-tematica {
+    font-size: 1rem;
+    color: #666666; /* Gris oscuro, casi fantasmagórico */
+    margin-top: -10px; /* Lo acerca un poco al dibujo */
+    /* font-style: italic; */
+    opacity: 0.7;
 }
 
 h1 {
-  color: #8b0000;
+  color: #ff0000;
   text-shadow: 2px 2px 4px #7e2121; 
+  font-size: 9vw;
+  line-height: 1.3;  
 }
 
 h3 {
-  color: #8b0000; 
+  color: #ff0000; 
+  text-shadow: 2px 2px 4px #7e2121;
+  font-size: 5vw;
+  font-family: "FuenteTerror", sans-serif;
+}
+
+p {
+  font-size: 4.5vw; /* Un poco más pequeño que el body para dar jerarquía */
+  margin-bottom: 15px;  
 }
   
 button {
   background-color: #333;
   color: #dfdede;
-  padding: 12px 18px;
+  padding: 3.5% 6%;
   transition: background-color 0.3s ease;
   border-radius: 12px;
   cursor: pointer;
+  font-size: 3.5vw;
+  font-family: 'FuenteTerror', sans-serif;
+}
+
+/* Estilo base para el botón Adivinar DURANTE el juego */
+#btnAdivinar {
+    /* 1. Reset de estilos por defecto y cursor */
+    background: none;
+    cursor: pointer;
+    outline: none;
+    display: inline-block;    
+
+    /* 2. Dimensiones y Espaciado */
+    padding: 10px 25px;
+    margin-top: -10px; 
+
+    /* 3. EL DISEÑO "OPERATIVO */
+    color: #ff3333; /* Un rojo un poco más brillante para que destaque */
+    
+    /* Usamos borde discontinuo para un look industrial/estarcido */
+    border: 2px solid #ff3333; /* Borde sólido y brillante */
+    
+    background-color: #1a0000; /* Un fondo rojo muy sutil */
+    border-radius: 5px; /* Ligeramente redondeado */
+
+    /* 4. Tipografía */
+    font-family: 'Courier New', Courier, monospace; 
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+
+    /* 6. Transición suave */
+    transition: all 0.3s ease;
+    transform: scale(0.98); /* Pequeño efecto de pulsado */
+    box-shadow: 0 0 10px #ff3333;
+}
+
+/* Estado del botón en el último turno (Amenaza estática) */
+#btnAdivinar.peligro-inminente {
+    background-color: #2a0000 !important; /* Un fondo oscuro que simula peso */
+    color: #ff3333 !important; /* Texto rojo vivo */
+    border: 1px solid #5a0000 !important; 
+      
+    /* El mismo resplandor amenazante y estático que usamos antes */
+    box-shadow: 0 0 10px #ff0000, 0 0 5px #8b0000 !important; 
+    
+    transition: all 0.3s ease !important; /* Transición suave para el toque */
+  
+    border-radius: 8px; 
+    padding: 12px 25px;
+  
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* El feedback táctil cuando el jugador decide pulsarlo */
+#btnAdivinar.peligro-inminente:active {
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000 !important; /* El brillo estalla */
+    transform: scale(0.95); /* Se hunde por el peso de la decisión */
+    background-color: rgba(60, 0, 0, 0.9); /* Se aclara el fondo */
+    color: #ffffff; /* El texto se vuelve blanco hirviente */
+    border-color: #ff0000; /* El borde se enciende */    
+}
+
+/* Esta clase se aplicará al botón SOLO cuando el juego termine */
+.modo-revivir {
+    background-color: #2b0000 !important; /* Fondo rojo sangre casi negro */
+    color: #ff3333 !important; /* Texto rojo brillante */
+    border: 2px solid #8b0000 !important; /* Borde rojo oscuro */
+    font-family: 'MaquinaEscribir', sans-serif !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), inset 0 0 10px rgba(139, 0, 0, 0.6) !important;
+    transition: all 0.4s ease-out; /* Transición suave desde el botón gris */
+}
+
+/* Efecto al pasar el ratón para dar sensación de "energía" */
+.modo-revivir:hover {
+    background-color: #4a0000 !important;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), inset 0 0 15px rgba(255, 0, 0, 0.8) !important;
+    cursor: pointer;
 }
 
 .texto-terror {
-    color: #ff3333;
-    font-weight: bold;
-    text-shadow: 0px 0px 8px #ff0000;
+  color: #ff3333;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff0000;  
 }
 
 #iniciaJuego {
-  color: #ff3333;
-  text-shadow: 0px 0px 8px #ff0000;
+  color: #4a0000;
+  text-shadow: 0 0 8px #ff0000;
+  font-size: 6vw;
 }
 
 #lineasPalabra {
   color: #ff3333;
-  text-shadow: 0px 0px 8px #ff0000;
+  text-shadow: 0 0 8px #ff0000;
+  font-size: 10vw;
+  letter-spacing: 0.3vw;
+  font-family: 'FuenteTerror', sans-serif;
+  margin-bottom: 35px;
+}
+
+#lineasPalabra span {
+    transition: all 2.5s ease-in-out; 
+}
+
+/* Cuando el contenedor reciba esta clase, la vida se drena */
+#lineasPalabra.estado-muerto,
+#lineasPalabra.estado-muerto span {
+    color: #4a4a4a !important; /* Gris oscuro cadáver */
+    text-shadow: none !important; /* Adiós al brillo de vida */
+    transition-delay: 2s;
+}
+
+@keyframes aparicionFantasma {
+  0% { 
+      opacity: 0; 
+  }
+  100% { 
+      opacity: 1; 
+  }
+}
+
+/* Esta clase transformará la letra en un espectro hueco */
+#lineasPalabra.estado-muerto span.letra-fantasma {
+  color: transparent !important; /* El interior es invisible */
+  -webkit-text-stroke: 1.5px rgba(102, 102, 102, 0.5) !important; /* Un borde gris ceniza */
+  text-shadow: none !important; /* Sin ningún resplandor */
+  transition: none !important;
+  
+  opacity: 0;
+  animation: aparicionFantasma 4.5s ease-in-out forwards;
+  animation-delay: 3.5s;
+}
+
+@keyframes levitacionTriunfal {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); } /* Sube un poco */
+    100% { transform: translateY(0); }
+}
+
+/* Esta clase se aplicará a los spans de la palabra ganadora */
+.letra-ganadora {
+    color: #ffffff !important; /* Blanco puro */
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #008080 !important; /* Resplandor cian/neón */
+    animation: levitacionTriunfal 2s infinite ease-in-out;
+    display: inline-block; /* Necesario para que el transform funcione */
+}
+
+@keyframes pulsoGloria {
+    0% { 
+        color: #ff3333; 
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; 
+    }
+    0% { 
+        color: #ffffff; 
+        /* Usamos el mismo cian que las letras y el purgatorio */
+        text-shadow: 0 0 8px #00ffff, 0 0 15px #00ffff, 0 0 25px #008080; 
+    }
+}
+
+.animar-victoria {
+    color: #00ffff !important;
+    font-family: 'FuenteTerror', sans-serif;
+    animation: pulsoGloria 2.5s ease-in-out forwards;
+    display: block;
+    margin-top: -15px; /* Para que suba y ocupe el lugar del suelo */
+    z-index: 10;
+    opacity: 0.4;
+  filter: blur(0.8px);
+}
+
+/* Apagamos el rojo y encendemos el aura de victoria en el purgatorio */
+#letrasUsadasTexto.estado-victoria,
+#letrasUsadasTexto.estado-victoria span {
+    color: #00ffff !important;
+    border-bottom-color: #00ffff !important;
+    text-shadow: 0 0 0 #00ffff !important;
+    transition: all 2s ease-in-out;
+    opacity: 0.4;
+  filter: blur(0.8px);
+}
+
+.envoltorio-estaca.estado-victoria input {
+    color: #ffffff !important;
+    text-shadow: 0 0 8px #00ffff !important;
+  filter: blur(0.8px);
+  
+  /* Reemplazamos el degradado rojo por uno cian puro */
+    background-image: linear-gradient(
+        to right, 
+        transparent 0%, 
+        #00ffff 25%,     
+        #00ffff 75%,     
+        transparent 100% 
+    ) !important;
+    opacity: 0.4;
+    transition: all 2.5s ease-in-out;    
+  
+}
+
+#btnReiniciar.estado-victoria  { 
+    box-shadow: 0 0 10px #ff0000, 0 0 5px #8b0000; /* Carbón al rojo vivo */
+    transition: box-shadow 0.3s ease, transform 0.1s ease; /* Para que reaccione suavemente al tacto */
+}
+/* Efecto al tocar el botón (Feedback táctil) */
+#btnReiniciar.estado-victoria:active,
+#btnReiniciar.estado-victoria:hover {
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000; /* El fuego crece al tocarlo */
+    transform: scale(0.95); /* Se hunde ligeramente para dar sensación de botón físico */
 }
 
 #inputLetra {
-  color: #ff3333;
-  text-shadow: 0px 0px 8px #ff0000;
+  color: #ff0000;
+  text-shadow: 0 0 8px #ff0000;
 }
 
 #modal-overlay {
-    position: fixed; /* Se queda fijo en la pantalla aunque bajes */
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo negro al 85% de oscuridad */
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    z-index: 1000; /* Asegura que esté por encima de TODO */
+  position: fixed; /* Se queda fijo en la pantalla aunque bajes */
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.95); /* Fondo negro al 85% de oscuridad */
+  backdrop-filter: blur(5px);
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  z-index: 1000; /* Asegura que esté por encima de TODO */
+  font-family: 'FuenteTerror', sans-serif;  
 }
 
 #modal-caja {
-    background-color: #1a1a1a;
-    border: 2px solid #8b0000;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    width: 80%;
-    max-width: 400px;
-    box-shadow: 0px 0px 20px #ff00004a; /* Un brillo rojo macabro */
+  font-size: 6vw;
+  background-color: #1a1a1a;
+  border: 2px solid #8b0000;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 0 20px #ff00004a; /* Un brillo rojo macabro */
+}
+
+#modal-btn {
+  font-size: 4vw;
+  padding: 3% 7%; /* Padding en porcentajes para que el botón también sea elástico */
+  margin: 4%;
 }
 
 button:hover {
@@ -77,65 +536,212 @@ button:hover {
 }
 
 input {
-  background-color: #474747;
-  color: #fff;
-  padding: 7px 15px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #8b0000;
   border-radius: 8px;
-  border: 1px solid #555;
+  color: #8b0000;
+  padding: 7px 15px;  
+  text-align: center;
+  font-size: 1rem;
+  font-family: 'FuenteTerror', sans-serif;
+}
+
+input:focus {
+  outline: none; /* Quita el resplandor azul por defecto del navegador */
+  border-bottom: 2px solid #ff0000; /* Se ilumina al hacerle clic */
+}
+
+.envoltorio-estaca input {
+  /* ... tus estilos ... */
+  border: none;
+  outline: none;
+  background: transparent;
+  margin-top: -50px;
+  
+  /* --- GRADIENTE DE DESVANECIMIENTO --- */
+  /* Creamos una línea usando una imagen de degradado */
+  background-image: linear-gradient(
+    to right, 
+    transparent 0%, /* Empieza invisible */
+    #ff0000 25%,     /* Se vuelve sólido rojo oscuro */
+    #ff0000 75%,     /* Sigue sólido */
+    transparent 100% /* Termina invisible */
+  );
+  
+  /* Configuramos para que parezca una línea inferior */
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 1.8px; /* Ancho completo, 2px de alto */
+  padding-bottom: 9px;  
+}
+
+.envoltorio-estaca.estado-muerto input {
+  /* El filtro grayscale drena el color de cualquier elemento */
+  filter: grayscale(100%) !important;
+  transition: all 1.5s ease-in-out; /* Una transición más larga para que sea suave */
+  transition-delay: 1s;
 }
 
 .oculto {
   display: none !important;
 }
 
-#dibujoAhorcado {
-    color: #ff3333; 
+#dibujoAhorcado {  
+  color: #ff3333;
+  font-size: 5vw; /* Muñeco elástico */
+  min-height: 180px; /* Reserva el espacio vertical máximo que ocupará el dibujo */
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center;
+  margin-bottom: 20px;
+  margin: 20px;
+    
+    /* Hacemos la fuente un poco más gruesa para que la luz tenga de dónde agarrarse */
     font-weight: bold; 
-    text-shadow: 1px 1px 5px #ff0000; 
+    
+    /* El resplandor multicapa: de más pegado y brillante, a más expandido y oscuro */
+    text-shadow: 
+        0 0 5px #ff0000,   /* Capa 1: Brillo intenso y cercano */
+        0 0 1px #cc0000,  /* Capa 2: Resplandor medio */
+        0 0 2px #ff3333;  /* Capa 3: El halo oscuro que se funde con el fondo */
+        
+    transition: all 0.3s ease;
+
+}
+
+/* PROPUESTA A: Blanco Lunar (Puro y limpio) */
+.dibujo-victoria-blanco {
+    color: #ffffff !important;
+    /* Un resplandor blanco sutil para que no se vea plano */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) !important;
+    transition: all 1.5s ease-in-out;
+}
+
+/* PROPUESTA B: Aura de Libertad (Cian, como las letras) */
+.dibujo-victoria-cian {
+  color: #00ffff !important;
+  text-shadow: 
+        0 0 5px #00ffff, 
+        0 0 15px #00ffff, 
+        0 0 30px #00aaaa !important; /* Resplandor cian absoluto */
+  
+  /* Resplandor cian para hacer juego con la levitación */
+  transition: all 1.5s ease-in-out;
+  opacity: 0.4;
+  filter: blur(0.8px);    
+  font-size: 5vw; /* Muñeco elástico */
+  min-height: 180px; /* Reserva el espacio vertical máximo que ocupará el dibujo */
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center;
+  margin-bottom: 20px;
+  margin: 20px auto !important;
+}
+
+/* Definimos la coreografía de la animación */
+@keyframes flickerMaldito {
+    /* Inicio: Invisible */
+    0% { opacity: 0; color: #ff0000; text-shadow: 0 0 15px #ff0000;}
+    
+    /* Parpadeos rápidos (aparece y desaparece) */
+    10%, 15%, 20%, 30%, 35%, 50%, 60%, 80% { 
+        opacity: 1; 
+        color: #ff1a1a; 
+        text-shadow: 0 0 20px #ff0000; 
+    }
+    5%, 12%, 18%, 25%, 32%, 45%, 55%, 70% { 
+        opacity: 0; 
+    }
+    
+    /* Final (el 100%): Se estabiliza en el color normal de la frase temática */
+    100% { 
+        opacity: 1; 
+        color: #666666; 
+        text-shadow: none; 
+    }
+}
+
+/* Esta es la clase que aplicará el poder de la animación */
+.animar-condena {
+    /* Nombre de la animación, duración (2.5s), tipo de curva y que corra solo UNA vez */
+    animation: flickerMaldito 2.5s ease-out 1;
 }
 
 #dibujoMenu {
-  color: #8b0000; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 5px #ff0000;
-    margin-top: 20px;
-    font-size: 28px; 
-    line-height: 1.2
+  color: #ff0000; 
+  font-weight: bold; 
+  text-shadow: 1px 1px 5px #8b0000;
+  margin-top: 5%;
+  font-size: 5vw; 
+  line-height: 1.2
 }
 
 #mensajeSistema {
-    opacity: 0; /* Opacidad cero. Es invisible */
-    transition: opacity 2s ease; /* Cualquier cambio en la opacidad se hace suavemente */
-    height: 20px; /* Le damos una altura fija para que la pantalla no salte cuando aparezca el texto */
-    color: #ff3333;
-    font-weight: bold;    
+  opacity: 0; /* visibilidad cero.
+  transition: opacity 2s ease; /* Cambio de opacidad suave */
+  height: 20px; /* Le damos una altura fija para que la pantalla no salte cuando aparezca el texto */
+  color: #ff3333;
+  font-weight: bold;    
+  font-family: 'FuenteTerror', sans-serif;
 }
 
 #mensajeSistema.mostrar-mensaje {
-    opacity: 1; /* Opacidad al 100% */
+  opacity: 1; /* Opacidad al 100% */
 }
 
 #cajaVidas {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    margin: 0;
-    font-size: 18px;
-    font-weight: bold;
+  position: absolute; /* Se independiza del flujo normal de la página */
+  top: 0.5%;          /* Distancia desde el techo de la pantalla */
+  right: 2%;
+  margin: 0;
+  font-size: 4.5vw;
+  font-weight: bold;
+  color: #666666;
+  font-family: 'FuenteTerror', sans-serif;
 }
 
 #cajaTiempo {
-    position: absolute;
-    top: 20px;
-    left: 20px; /* Lo enviamos a la izquierda */
-    margin: 0;
-    font-size: 18px;
-    font-weight: bold;
-    color: #dfdede;
+  position: absolute; /* Se independiza del flujo normal de la página */
+  top: 0.5%;          /* Distancia desde el techo de la pantalla */
+  left: 2%;            /* Pegado a la pared izquierda absoluta */
+  display: flex;
+  justify-content: space-between; /* Envía un elemento a cada extremo */
+  width: 23vw;
+  padding: 0 0;
+  box-sizing: border-box;
+  margin-bottom:10px;  
+  z-index: 100;
+  
+  margin: 0;  /* preguntar de aquí abajo */
+  font-size: 4.5vw;
+  font-weight: bold;
+  color: #666666;
+  font-family: 'FuenteTerror', sans-serif;
 }
 
 #letrasUsadasTexto {
   color: #ff3333;
+  font-size: 5vw;
+  font-family: 'FuenteTerror', sans-serif;
+}
+
+#letrasUsadasTexto.estado-muerto,
+#letrasUsadasTexto.estado-muerto span {
+  color: #4a4a4a !important; /* Gris oscuro cadáver */
+  text-shadow: none !important; /* Adiós al brillo de vida */
+  transition: all 1.2s ease-in-out; /* Transición un poco lenta para efecto dramático */
+  transition-delay: 0.6s;
+}
+
+.letra-acertada {
+    color: #555555; /* Gris oscuro para que pase desapercibida */
+    text-shadow: none; /* Le quitamos el brillo para que no destaque */
+}
+
+.letra-erronea {
+    color: #ff3333; /* Rojo brillante para destacar el error */
+    text-shadow: 0 0 8px #ff0000;
 }
 
 /* La orden de animación */
@@ -146,7 +752,7 @@ input {
 /* Los planos de cómo se ve el latido (Fotogramas clave) */
 @keyframes latir {
     0% { transform: scale(1); text-shadow: 1px 1px 5px #ff00007a; }
-    50% { transform: scale(1.05); text-shadow: 0px 0px 15px #ff0000; color: #ff3333; }
+    50% { transform: scale(1.05); text-shadow: 0 0 15px #ff0000; color: #ff3333; }
     100% { transform: scale(1); text-shadow: 1px 1px 5px #ff00007a; }
 }
 
@@ -158,4 +764,233 @@ input {
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
     20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* Por defecto, este cartel está oculto */
+#bloqueo-rotacion {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000;
+    color: #ff0000;
+    z-index: 9999; /* Esto asegura que tape todo el juego */
+    text-align: center;
+    padding-top: 20%;
+}
+
+/* Si el celular está acostado (Landscape) y la pantalla es pequeña, se activa */
+@media (orientation: landscape) and (max-height: 600px) {
+    #bloqueo-rotacion {
+        display: block; /* Muestra el cartel */
+    }
+    #pantalla-menu, #modal-overlay, .contenedor-juego {
+        display: none !important; /* Esconde todo el juego temporalmente */
+    }
+}
+
+/* --- MODAL DE CONFIRMACIÓN DE SALIDA --- */
+/* Fondo oscuro que cubre toda la pantalla */
+#modal-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.90); /* Un poco más oscuro para más dramatismo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Asegura que esté por encima de absolutamente todo */
+}
+
+/* --- UBICACIÓN DEL BOTÓN SALIR --- */
+#btnSalir {
+    position: fixed; /* Lo ancla a la pantalla del dispositivo */
+    bottom: 20px;    /* Distancia desde el suelo */
+    left: 20px;      /* Distancia desde la pared izquierda (cámbialo a 'right: 20px;' si lo prefieres a la derecha) */
+    
+    /* Estilos visuales para que sea un botón discreto */
+    font-size: 0.8rem;
+    padding: 8px 15px;
+    background-color: transparent; 
+    color: #666666; /* Color de tu texto general */
+    border: 1px solid #555; /* Un borde sutil */
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 100; /* Asegura que no quede tapado por otros elementos del fondo */
+}
+
+#btnSalir:hover {
+    background-color: #333;
+    color: #666666;
+    border-color: #888;
+}
+
+.botones-confirmacion {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Espacio entre el botón Sí y el botón No */
+    margin-top: 20px;
+}
+
+/* Botón de peligro (Sí, huir) */
+#btn-confirm-si {
+    background-color: #8b0000; /* Rojo sangre oscuro */
+    color: #dfdede;
+    border: 1px solid #ff0000;
+}
+
+#btn-confirm-si:hover {
+    background-color: #ff0000; /* Rojo brillante al pasar el mouse */
+    color: white;
+    cursor: pointer;
+}
+
+/* Botón seguro (No, me quedo) */
+#btn-confirm-no {
+    /* Toma los estilos por defecto de tus otros botones */
+    cursor: pointer;
+}
+
+/* =========================================
+   PANTALLA DE CONFIGURACIÓN
+   ========================================= */
+#pantalla-configuracion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    width: 100%;
+    height: 100svh;    
+    box-sizing: border-box;
+    z-index: 50;
+    background-color: #050000; /* Fondo súper oscuro */
+    overflow-y: auto; /* Permite hacer scroll si la pantalla es muy pequeña */
+    
+    padding: clamp(15px, 5vw, 20px);
+    padding-bottom: 60px;
+}
+
+#pantalla-configuracion h2 {
+    font-family: 'MaquinaEscribir', sans-serif;
+    color: #ff3333;
+    text-shadow: 0 0 10px #ff0000;
+    text-align: center;
+    margin-bottom: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.seccion-config {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #4a0000;
+}
+
+.seccion-config h3 {
+    color: #aa0000;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.opcion-config {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    color: #cccccc;
+    font-size: clamp(1rem, 4.5vw, 1rem);
+}
+
+.opcion-columna {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    color: #cccccc;
+    text-align: left;
+}
+
+.opcion-columna span {
+    margin-bottom: 8px;
+}
+
+.nota-config {
+    font-size: 0.8rem;
+    color: #888888;
+    font-style: italic;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.grupo-botones {
+    display: flex;
+    flex-wrap: wrap; /* Si no caben, bajan a la siguiente línea */
+    gap: 10px;
+}
+
+/* El Botón Estilo Consola/Terminal */
+.btn-opcion {
+    background-color: transparent;
+    color: #aa0000; /* Rojo apagado (estado inactivo) */
+    border: 1px solid #4a0000;
+    padding: clamp(5px, 2vw, 8px) clamp(8px, 3vw, 12px);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.95rem, 3vw, 0.95rem);
+    cursor: pointer;
+    transition: all 0.3s ease; 
+}
+
+/* El estado ENCENDIDO (El rojo del menú principal) */
+.btn-opcion.seleccionado {
+    color: #ff3333;
+    border-color: #ff0000;
+    text-shadow: 0 0 5px #ff0000;
+    box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.2);
+}
+
+/* El estado BLOQUEADO (Los candados de la historia) */
+.btn-opcion.bloqueado {
+    color: #444444;
+    border-color: #222222;
+    cursor: not-allowed;    
+}
+
+/* Botón de Peligro Extremo */
+.zona-peligro {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-peligro {
+    background-color: transparent;
+    color: #555555;
+    border: 1px dashed #555555;
+    padding: 10px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    cursor: pointer;
+}
+
+.btn-peligro:active {
+    color: #ff0000;
+    border-color: #ff0000;
+}
+
+.caja-concepto {
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid #4a0000;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+    text-align: left;
+}
+.caja-concepto p {
+    margin: 5px 0;
+    font-size: 0.9em;
 }

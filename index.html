@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="UTF-8"/>
     <title>Ahorcado Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"></head>
+    <link rel="stylesheet" href="style.css">
+  </head>
   <body>
+    <div id="bloqueo-rotacion">
+      <h1>Gira tu dispositivo</h1>
+      <p>Mis cadenas no te permiten jugar horizontal</p>
+    </div>
+    
     <div id="modal-overlay">
     <div id="modal-caja">
         <h2 id="modal-titulo">Título</h2>
@@ -15,32 +21,117 @@
     </div>
     
     <div id="pantalla-menu">
-    <h1>Ahorcado...</h1>
-    <p>Elige tu destino:</p>  
-    <button id="btnSistema">Jugar contra el sistema</button>  
-    <br><button id="btnAmigo">Jugar contra un Amigo</button>
+      <div class="barra-superior">
+        <button id="btnSalirMenu" class="btn-icono" title="Escapar">✕</button>
+        <button id="btnConfig" class="btn-icono" title="Configuración">⛭</button>
+      </div>
+    <h1 data-i18n="tituloPrincipal">Ahorcado</h1>
+    <p data-i18n="textoDestino">Elige tu destino:</p>
+    <button id="btnHistoria" data-i18n="btnHistoria" class="btn-primario">MODO HISTORIA <br><span class="subtitulo">✟ Desafía al abismo ✟</span></button>
+    <button id="btnSistema" data-i18n="btnSistema" class="btn-secundario">PRÁCTICA<br><span class="subtitulo">Juega contra el sistema</span></button>  
+    <button id="btnAmigo" data-i18n="btnAmigo" class="btn-secundario">MULTIJUGADOR<br><span class="subtitulo">Condena a un Amigo</span></button>
     <pre id="dibujoMenu"></pre>
+      <p data-i18n="fraseTematica" class="frase-tematica">"Alguien debe ocupar este lugar..."</p>
+    </div>
+    
+    <div id="pantalla-configuracion" class="oculto">
+      <div class="barra-superior">
+        <button id="btnCerrarConfig" class="btn-icono" title="Volver al Menú">✕</button>
+      </div>
+      
+      <h2 data-i18n="tituloConfig">Leyes del Purgatorio</h2>
+      
+      <div class="seccion-config">
+        <h3 data-i18n="lblSentidos">Sentidos</h3>
+        <div class="opcion-config">
+          <span data-i18n="lblMusica">Música Ambiental:</span>
+          <button id="btnToggleMusica" class="btn-opcion seleccionado">[ ENCENDIDA ]</button>
+        </div>
+        <div class="opcion-config">
+          <span data-i18n="lblSfx">Efectos Siniestros:</span>
+          <button id="btnToggleSfx" class="btn-opcion seleccionado">[ ENCENDIDOS ]</button>
+        </div>
+      </div>
+
+      <div class="seccion-config">
+        <h3 data-i18n="lblLengua">Lengua</h3>
+        <div class="grupo-botones">
+          <button id="btnLangEs" class="btn-opcion seleccionado">Español</button>
+          <button id="btnLangEn" class="btn-opcion">English</button>
+        </div>
+      </div>
+
+      <div class="seccion-config">
+        <h3 data-i18n="tituloDificultad">Dificultad (Modo Libre)</h3>
+        <p class="nota-config" data-i18n="textoDificultad">Demuestra tu valor en el Modo Historia <br>para romper las cadenas.</p>
+        
+        <div class="opcion-columna">
+          <span data-i18n="lblTurnosMorir">Turnos antes de morir:</span>
+          <div class="grupo-botones">
+            <button id="btnTurno10" class="btn-opcion seleccionado">10</button>
+            <button id="btnTurno9" class="btn-opcion bloqueado" disabled>9 🔒</button>
+            <button id="btnTurno8" class="btn-opcion bloqueado" disabled>8 🔒</button>
+            <button id="btnTurno7" class="btn-opcion bloqueado" disabled>7 🔒</button>
+          </div>
+        </div>
+
+        <div class="opcion-columna">
+          <span data-i18n="lblTiempoMaximo">Tiempo Máximo (Cronómetro):</span>
+          <div class="grupo-botones">
+            <button id="btnTiempoOff" class="btn-opcion seleccionado" data-i18n="btnTiempoNinguno">Ninguno</button>
+            <button id="btnTiempo3" class="btn-opcion bloqueado" disabled>3 min 🔒</button>
+            <button id="btnTiempo2" class="btn-opcion bloqueado" disabled>2 min 🔒</button>
+            <button id="btnTiempo1" class="btn-opcion" disabled>1 min 🔒</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="zona-peligro">
+        <button id="btnBorrarProgreso" class="btn-peligro" data-i18n="btnBorrarProgreso">Borrar Progreso</button>
+      </div>
     </div>
 
     <div id="pantalla-palabra" class="oculto">
-    <br><br><h3>Escribe la sentencia:</h3>  
-    <input type="password" id="inputPalabra" placeholder="Asegurate de que nadie vea">  
-    <br><br><button id="btnEmpezar">¡Que Empiece el Juego!</button>
+    <br><br><h3 data-i18n="pantallaPalabraTitulo">Escribe la sentencia:</h3>  
+    <div class="envoltorio-estaca">
+      <input type="password" id="inputPalabra" placeholder="Asegurate de que nadie vea" data-i18n="placeholderAmigo">  
+    </div>
+    <br><br><button id="btnEmpezar" data-i18n="btnSellarDestinoAmigo">¡Que Empiece el Juego!</button>
     </div>
 
     <div id="pantalla-juego" class="oculto">  
-    <h3 id="iniciaJuego">Adivina la palabra, o ¡muere!</h3>
-    <pre id="dibujoAhorcado"></pre>  
-    <h1 id="lineasPalabra"></h1>    
-    <input type="text" id="inputLetra" maxlength="1">    
+    <h3 id="iniciaJuego">¡Adivina o muere!</h3>
+    <pre id="dibujoAhorcado"></pre>
+      <p id="mensajeCondena" class="frase-tematica oculto" data-i18n="fraseSentenciaVictoria">_✟_ ¡ESTÁS CONDENADO! _✟_</p>
+    <h1 id="lineasPalabra"></h1> 
+    <div class="envoltorio-estaca">
+      <input type="text" id="inputLetra" maxlength="1">
+    </div>
     <br><br><button id="btnAdivinar">Adivinar</button>  
     <button id="btnReiniciar" class="oculto"></button>
     <p id="mensajeSistema"></p>
-    <p id="cajaTiempo">Tiempo: <span id="tiempoRestante">60</span></p>
-    <p id="cajaVidas">Turnos: <span id="contadorVidas">7</span></p>
-    <p id="letrasUsadasTexto">Letras en el purgatorio: </p>     
-    </div>
-
-    <script src="script.js"></script>
+    <p id="cajaTiempo">
+    <span data-i18n="lblTiempoJuego">Tiempo:</span> 
+    <span id="tiempoRestante">60</span>
+    </p>    
+    <p id="cajaVidas">
+    <span data-i18n="lblTurnosJuego">Turnos:</span> 
+    <span id="contadorVidas"></span>
+    </p>
+    <p id="letrasUsadasTexto">Letras en el purgatorio: </p> 
+    <button id="btnSalir" data-i18n="btnSalir">Salir</button>
+      
+      <div id="modal-confirm-overlay" class="oculto">    
+        <div id="modal-caja"> 
+            <h3 data-i18n="modalConfirmTitulo">¿Huir como cobarde?</h3>
+            <p data-i18n="modalConfirmMensaje">Si vuelves al menú, tu progreso se perderá en el abismo.</p>        
+            <div class="botones-confirmacion">
+                <button id="btn-confirm-si" data-i18n="btnConfirmSi">Sí, huir</button>
+                <button id="btn-confirm-no" data-i18n="btnConfirmNo">No, me quedo</button>
+            </div>
+        </div>
+      </div>
+      </div>    
+    <script src="app.js"></script>
   </body>
 </html>
