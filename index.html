@@ -81,7 +81,7 @@
             <button id="btnTiempoOff" class="btn-opcion seleccionado" data-i18n="btnTiempoNinguno">Ninguno</button>
             <button id="btnTiempo3" class="btn-opcion bloqueado" disabled>3 min 🔒</button>
             <button id="btnTiempo2" class="btn-opcion bloqueado" disabled>2 min 🔒</button>
-            <button id="btnTiempo1" class="btn-opcion" disabled>1 min 🔒</button>
+            <button id="btnTiempo1" class="btn-opcion">1 min 🔒</button>
           </div>
         </div>
       </div>
@@ -104,10 +104,10 @@
     <pre id="dibujoAhorcado"></pre>
       <p id="mensajeCondena" class="frase-tematica oculto" data-i18n="fraseSentenciaVictoria">_✟_ ¡ESTÁS CONDENADO! _✟_</p>
     <h1 id="lineasPalabra"></h1> 
-    <div class="envoltorio-estaca">
-      <input type="text" id="inputLetra" maxlength="1">
-    </div>
-    <br><br><button id="btnAdivinar">Adivinar</button>  
+    <div id="teclado-virtual" class="teclado-contenedor"></div>
+      
+     
+      
     <button id="btnReiniciar" class="oculto"></button>
     <p id="mensajeSistema"></p>
     <p id="cajaTiempo">
@@ -117,8 +117,7 @@
     <p id="cajaVidas">
     <span data-i18n="lblTurnosJuego">Turnos:</span> 
     <span id="contadorVidas"></span>
-    </p>
-    <p id="letrasUsadasTexto">Letras en el purgatorio: </p> 
+    </p>    
     <button id="btnSalir" data-i18n="btnSalir">Salir</button>
       
       <div id="modal-confirm-overlay" class="oculto">    
@@ -131,7 +130,10 @@
             </div>
         </div>
       </div>
-      </div>    
+      </div>
+    <script src="datos.js"></script>
+    <script src="idiomas.js"></script>
+    <script src="biblioteca.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

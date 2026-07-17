@@ -1,0 +1,1418 @@
+/* ================================================================
+   🎨 ÍNDICE RÁPIDO DE NAVEGACIÓN
+   ================================================================
+   1. VARIABLES GLOBALES Y FUENTES
+   2. RESET Y ESTILOS BASE (BODY)
+   3. LAYOUT Y ESTRUCTURA PRINCIPAL
+   4. TIPOGRAFÍA GLOBAL
+   5. BOTONES (PRIMARIOS, SECUNDARIOS, ICONOS)
+   6. TECLADO DEL JUEGO
+   7. ELEMENTOS DEL JUEGO (PALABRA, AHORCADO, LETRAS)
+   8. ESTADOS DEL JUEGO (JUGANDO, VICTORIA, MUERTO)
+   9. MODALES Y OVERLAYS
+   10. PANTALLA DE CONFIGURACIÓN
+   11. PANELES ESPECIALES (DEFINICIÓN, POST-PARTIDA)
+   12. ANIMACIONES (@keyframes)
+   13. MEDIA QUERIES
+   ================================================================ */
+
+/* ================================================================
+   1. VARIABLES GLOBALES Y FUENTES
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+@font-face {
+    font-family: 'FuenteTerror';
+    src: url('Tipografía/ITC Serif Gothic Std Heavy.otf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir';
+    src: url('Tipografía/CinzelDecorative-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir2';
+    src: url('Tipografía/ShareTechMono-Regular.ttf') format('truetype');
+}
+
+:root {
+    /* === PALETA DE COLORES === */
+    --color-rojo-puro: #ff0000;
+    --color-rojo-claro: #ff3333;
+    --color-rojo-oscuro: #8b0000;
+    --color-rojo-sombra: #7e2121;
+    --color-rojo-intenso: #cc0000;
+    --color-rojo-muy-oscuro: #4a0000;
+    --color-rojo-sangre: #2b0000;
+    --color-rojo-fondo: #1a0000;
+    --color-rojo-fondo-2: #2a0000;
+
+    /* === GRISES === */
+    --color-gris-claro: #dfdede;
+    --color-gris-medio: #cccccc;
+    --color-gris-fantasma: #666666;
+    --color-gris-apagado: #555555;
+    --color-gris-oscuro: #4a4a4a;
+    --color-gris-oscuro-2: #333333;
+    --color-gris-oscuro-3: #222222;
+    --color-gris-ceniza: #2b2b2b;
+    --color-gris-cadaver: #888888;
+
+    /* === COLORES DE VICTORIA === */
+    --color-cian-victoria: #00ffff;
+    --color-cian-oscuro: #008080;
+    --color-cian-medio: #00aaaa;
+    --color-blanco: #ffffff;
+    --color-negro: #0a0a0a;
+    --color-negro-2: #050000;
+
+    /* === SOMBRAS REUTILIZABLES === */
+    --sombra-roja: 0 0 8px var(--color-rojo-puro);
+    --sombra-roja-texto: 2px 2px 4px var(--color-rojo-sombra);
+    --sombra-cian-texto: 0 0 10px var(--color-cian-victoria),
+                         0 0 20px var(--color-cian-victoria),
+                         0 0 30px var(--color-cian-oscuro);
+
+    /* === FUENTES === */
+    --fuente-principal: 'FuenteTerror', sans-serif;
+    --fuente-maquina: 'MaquinaEscribir', sans-serif;
+    --fuente-maquina-2: 'MaquinaEscribir2', monospace;
+    --fuente-crimson: 'Crimson Text', serif;
+    --fuente-mono: 'Share Tech Mono', 'Courier New', monospace;
+    
+    /* --- VARIABLES MARCO GÓTICO --- */
+    --marco-fondo: #050505;            /* El vacío central oscuro (Negative Space) */
+    --marco-trazo-exterior: #1a0505;   /* Borde grueso exterior imitando hierro */
+    --marco-trazo-interior: #8a0303;   /* Delineado rojo fino brillante */
+    --marco-esquinas: #8a0303;         /* Color de las puntas forjadas en los extremos */
+}
+
+/* Clase auxiliar para aplicar la fuente máquina */
+.fuente-principal {
+    font-family: var(--fuente-maquina);
+}
+
+/* ================================================================
+   2. RESET Y ESTILOS BASE (BODY)
+   ================================================================ */
+
+body {
+    background-color: var(--color-negro);
+    color: #e0e0e0;
+    font-family: var(--fuente-principal);
+    font-size: 4.5vw;
+    text-align: center;
+    padding: 20px;
+    padding-top: 45px;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto; /* Esto centra el juego en la pantalla si se abre en PC */
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+/* ================================================================
+   3. LAYOUT Y ESTRUCTURA PRINCIPAL
+   ================================================================ */
+#pantalla-juego {
+    position: fixed; /* Esto lo saca del flujo normal y lo pega a la pantalla */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #050505; /* Fondo oscuro para tapar lo de abajo */
+    z-index: 100; /* Lo pone por encima de todo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cuando el juego esté oculto, el z-index no importa porque display es none */
+#pantalla-juego.oculto {
+    display: none !important;
+}
+
+#menu-principal {
+    position: relative;
+    z-index: 10; /* Una capa menor que el juego */
+}
+
+/* Barra superior que soluciona el problema de los espacios en PC y Celular */
+.barra-superior {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+    padding: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    z-index: 100;
+}
+
+/* Ocultar elementos sin romper el layout */
+.oculto {
+    display: none !important;
+}
+
+/* ================================================================
+   4. TIPOGRAFÍA GLOBAL
+   ================================================================ */
+
+h1 {
+    color: var(--color-rojo-puro);
+    text-shadow: var(--sombra-roja-texto);
+    font-size: 9vw;
+    line-height: 1.3;
+}
+
+h3 {
+    color: var(--color-rojo-puro);
+    text-shadow: var(--sombra-roja-texto);
+    font-size: 5vw;
+    font-family: var(--fuente-principal);
+}
+
+p {
+    font-size: 4.5vw; /* Un poco más pequeño que el body para dar jerarquía */
+    margin-bottom: 15px;
+}
+
+.subtitulo {
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin-top: 1px;
+    opacity: 0.6;
+}
+
+.frase-tematica {
+    font-size: 1rem;
+    color: var(--color-gris-fantasma);
+    margin-top: -10px; /* Lo acerca un poco al dibujo */
+    opacity: 0.7;
+}
+
+.texto-terror {
+    color: var(--color-rojo-claro);
+    font-weight: bold;
+    text-shadow: var(--sombra-roja);
+}
+
+/* ================================================================
+   5. BOTONES (PRIMARIOS, SECUNDARIOS, ICONOS)
+   ================================================================ */
+
+/* Base de todos los botones */
+button {
+    background-color: var(--color-gris-oscuro-2);
+    color: var(--color-gris-claro);
+    padding: 3.5% 6%;
+    transition: background-color 0.3s ease;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 3.5vw;
+    font-family: var(--fuente-principal);
+}
+
+button:hover {
+    background-color: var(--color-rojo-oscuro);
+}
+
+/* Botones principales (primario y secundario) */
+.btn-primario,
+.btn-secundario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 85%;
+    margin: 1px auto;
+    padding: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primario {
+    background-color: var(--color-rojo-oscuro);
+    color: white;
+    border: 2px solid var(--color-rojo-puro);
+}
+
+.btn-primario:hover {
+    background-color: var(--color-rojo-puro);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.btn-secundario {
+    background-color: transparent;
+    color: var(--color-gris-fantasma);
+    border: 1px solid var(--color-gris-apagado);
+}
+
+.btn-secundario:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-gris-cadaver);
+}
+
+/* Botones con ícono en la barra superior */
+.btn-icono {
+    font-family: var(--fuente-maquina-2);
+    color: var(--color-gris-fantasma);
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.btn-icono:hover {
+    opacity: 1;
+}
+
+/* Botón Adivinar durante el juego */
+#btnAdivinar {
+    background: none;
+    cursor: pointer;
+    outline: none;
+    display: inline-block;
+    padding: 10px 25px;
+    margin-top: -10px;
+    color: var(--color-rojo-claro);
+    border: 2px solid var(--color-rojo-claro);
+    background-color: var(--color-rojo-fondo);
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    transform: scale(0.98);
+    box-shadow: 0 0 10px var(--color-rojo-claro);
+}
+
+/* Estado peligro inminente del botón Adivinar */
+#btnAdivinar.peligro-inminente {
+    background-color: var(--color-rojo-fondo-2);
+    color: var(--color-rojo-claro);
+    border: 1px solid #5a0000;
+    box-shadow: 0 0 10px var(--color-rojo-puro),
+                0 0 5px var(--color-rojo-oscuro);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+#btnAdivinar.peligro-inminente:active {
+    box-shadow: 0 0 20px var(--color-rojo-puro),
+                0 0 30px var(--color-rojo-puro);
+    transform: scale(0.95);
+    background-color: rgba(60, 0, 0, 0.9);
+    color: var(--color-blanco);
+    border-color: var(--color-rojo-puro);
+}
+
+/* Botón modo revivir */
+.modo-revivir {
+    background-color: var(--color-rojo-sangre);
+    color: var(--color-rojo-claro);
+    border: 2px solid var(--color-rojo-oscuro);
+    font-family: var(--fuente-maquina);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4),
+                inset 0 0 10px rgba(139, 0, 0, 0.6);
+    transition: all 0.4s ease-out;
+}
+
+.modo-revivir:hover {
+    background-color: var(--color-rojo-muy-oscuro);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8),
+                inset 0 0 15px rgba(255, 0, 0, 0.8);
+    cursor: pointer;
+}
+
+/* Botón Reiniciar en estado victoria */
+#btnReiniciar.estado-victoria {
+    box-shadow: 0 0 10px var(--color-rojo-puro),
+                0 0 5px var(--color-rojo-oscuro);
+    transition: box-shadow 0.3s ease, transform 0.1s ease;
+}
+
+#btnReiniciar.estado-victoria:active,
+#btnReiniciar.estado-victoria:hover {
+    box-shadow: 0 0 20px var(--color-rojo-puro),
+                0 0 30px var(--color-rojo-puro);
+    transform: scale(0.95);
+}
+
+/* Botón Salir */
+#btnSalir {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    font-size: 0.8rem;
+    padding: 8px 15px;
+    background-color: transparent;
+    color: var(--color-gris-fantasma);
+    border: 1px solid var(--color-gris-apagado);
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+#btnSalir:hover {
+    background-color: var(--color-gris-oscuro-2);
+    color: var(--color-gris-fantasma);
+    border-color: var(--color-gris-cadaver);
+}
+
+/* Botón estilo terminal/consola para opciones */
+.btn-opcion {
+    background-color: transparent;
+    color: #aa0000;
+    border: 1px solid var(--color-rojo-muy-oscuro);
+    padding: clamp(5px, 2vw, 8px) clamp(8px, 3vw, 12px);
+    font-family: var(--fuente-mono);
+    font-size: clamp(0.95rem, 3vw, 0.95rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-opcion.seleccionado {
+    color: var(--color-rojo-claro);
+    border-color: var(--color-rojo-puro);
+    text-shadow: 0 0 5px var(--color-rojo-puro);
+    box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.2);
+}
+
+.btn-opcion.bloqueado {
+    color: #444444;
+    border-color: var(--color-gris-oscuro-3);
+    cursor: not-allowed;
+}
+
+/* Botones de peligro (zona peligrosa) */
+.btn-peligro {
+    background-color: transparent;
+    color: var(--color-gris-apagado);
+    border: 1px dashed var(--color-gris-apagado);
+    padding: 10px 20px;
+    font-family: var(--fuente-mono);
+    cursor: pointer;
+}
+
+.btn-peligro:active {
+    color: var(--color-rojo-puro);
+    border-color: var(--color-rojo-puro);
+}
+
+/* ================================================================
+   6. TECLADO DEL JUEGO
+   ================================================================ */
+
+/* Contenedor principal del teclado */
+.teclado-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 10px auto;
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+
+/* Cada fila del teclado */
+.fila-teclado {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+/* Tecla base */
+.tecla {
+    flex: 1;
+    max-width: 42px;
+    height: 48px;
+    margin: 0 2px;
+    padding: 0;
+    font-size: clamp(0.9rem, 4vw, 1.2rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--color-negro);
+    color: #660000;
+    border: 1px solid var(--color-negro);
+    border-radius: 5px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.tecla:hover:not(:disabled) {
+    background-color: #660000;
+    border-color: var(--color-rojo-puro);
+}
+
+/* Estado muerto de tecla presionada */
+.tecla:disabled {
+    background-color: var(--color-negro);
+    color: var(--color-gris-oscuro-2);
+    border-color: var(--color-negro);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Botón estilo teclado QWERTY (panel definición) */
+.boton-teclas-qwerty {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.boton-teclas-qwerty .tecla {
+    pointer-events: none;
+    margin: 0;
+    flex-grow: 0;
+    width: 55px;
+    height: 35px;
+    padding: 5px;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boton-teclas-qwerty:active .tecla {
+    transform: translateY(4px) scale(0.95);
+}
+
+/* ================================================================
+   7. ELEMENTOS DEL JUEGO (PALABRA, AHORCADO, LETRAS)
+   ================================================================ */
+
+/* Título de inicio de juego */
+#iniciaJuego {
+    color: var(--color-rojo-muy-oscuro);
+    text-shadow: var(--sombra-roja);
+    font-size: 6vw;
+    margin-bottom: 3px;
+}
+
+/* Líneas de la palabra a adivinar */
+#lineasPalabra {
+    color: var(--color-rojo-claro);
+    text-shadow: var(--sombra-roja);
+    font-size: 2.5rem;
+    letter-spacing: 0.3vw;
+    font-family: var(--fuente-principal);
+    margin-bottom: 35px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+}
+
+#lineasPalabra span {
+    transition: all 2.5s ease-in-out;
+}
+
+/* Dibujo del ahorcado */
+#dibujoAhorcado {
+    color: var(--color-rojo-claro);
+    font-size: 5vw;
+    min-height: 180px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 20px;
+    margin-top: 0;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--color-rojo-puro),
+                 0 0 1px var(--color-rojo-intenso),
+                 0 0 2px var(--color-rojo-claro);
+    transition: all 0.3s ease;
+}
+
+#lienzoJuego {
+    width: 100%; /* Permite que se adapte si la pantalla del celular es muy pequeña */
+    max-width: 220px; /* EL TAMAÑO MÁXIMO: Ajústalo para igualar tu ASCII */
+    height: auto; /* Mantiene la proporción matemática exacta (5:6) */
+    margin: 0 auto; /* Centra el canvas horizontalmente */
+}
+
+/* Dibujo del menú */
+#dibujoMenu {
+    color: var(--color-rojo-puro);
+    font-weight: bold;
+    text-shadow: 1px 1px 5px var(--color-rojo-oscuro);
+    margin-top: 5%;
+    font-size: 5vw;
+    line-height: 1.2;
+}
+
+/* Input para adivinar letra */
+input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--color-rojo-oscuro);
+    border-radius: 8px;
+    color: var(--color-rojo-oscuro);
+    padding: 7px 15px;
+    text-align: center;
+    font-size: 1rem;
+    font-family: var(--fuente-principal);
+}
+
+input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--color-rojo-puro);
+}
+
+#inputLetra {
+    color: var(--color-rojo-puro);
+    text-shadow: var(--sombra-roja);
+}
+
+/* Wrapper especial para el input con degradado */
+.envoltorio-estaca input {
+    border: none;
+    outline: none;
+    background: transparent;
+    margin-top: -50px;
+    background-image: linear-gradient(
+        to right,
+        transparent 0%,
+        var(--color-rojo-puro) 25%,
+        var(--color-rojo-puro) 75%,
+        transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: 100% 1.8px;
+    padding-bottom: 9px;
+}
+
+/* Letra acertada */
+.letra-acertada {
+    color: var(--color-gris-apagado);
+    text-shadow: none;
+}
+
+/* Letra errónea */
+.letra-erronea {
+    color: var(--color-rojo-claro);
+    text-shadow: var(--sombra-roja);
+}
+
+/* Texto de letras usadas */
+#letrasUsadasTexto {
+    color: var(--color-rojo-claro);
+    font-size: 5vw;
+    font-family: var(--fuente-principal);
+}
+
+/* Caja de vidas */
+#cajaVidas {
+    position: absolute;
+    top: 0.5%;
+    right: 2%;
+    margin: 0;
+    font-size: 4.5vw;
+    font-weight: bold;
+    color: var(--color-gris-fantasma);
+    font-family: var(--fuente-principal);
+}
+
+/* Caja de tiempo */
+#cajaTiempo {
+    position: absolute;
+    top: 0.5%;
+    left: 2%;
+    display: flex;
+    justify-content: space-between;
+    width: 23vw;
+    padding: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    z-index: 100;
+    margin: 0;
+    font-size: 4.5vw;
+    font-weight: bold;
+    color: var(--color-gris-fantasma);
+    font-family: var(--fuente-principal);
+}
+
+/* Mensaje del sistema */
+#mensajeSistema {
+    opacity: 0;
+    transition: opacity 2s ease;
+    height: 20px;
+    color: var(--color-rojo-claro);
+    font-weight: bold;
+    font-family: var(--fuente-principal);
+}
+
+#mensajeSistema.mostrar-mensaje {
+    opacity: 1;
+}
+
+/* ================================================================
+   8. ESTADOS DEL JUEGO (JUGANDO, VICTORIA, MUERTO)
+   ================================================================ */
+
+/* === ESTADO: JUGANDO === */
+#pantalla-juego.estado-jugando h3 {
+    font-family: var(--fuente-principal);
+    text-shadow: 2px 2px 4px var(--color-rojo-puro),
+                 -2px -1px 6px var(--color-rojo-puro);
+    font-size: 7vw;
+    margin-bottom: 15px;
+    margin-top: 1px;
+    animation: parpadeoFantasma 30s infinite;
+}
+
+#pantalla-juego h3 {
+    font-family: var(--fuente-maquina);
+    color: var(--color-rojo-claro);
+    text-shadow: 2px 2px 4px var(--color-rojo-sombra);
+    font-size: 8vw;
+    line-height: 0;
+}
+
+#pantalla-menu h1 {
+    animation: respiracionAbismo 4s infinite ease-in-out;
+    margin-bottom: 20px;
+    font-family: var(--fuente-maquina);
+}
+
+/* === EFECTOS GENERALES === */
+.efecto-latido {
+    animation: latidoSiniestro 3s infinite ease-in-out;
+}
+
+.efecto-salvado {
+    animation: salvadoSiniestro 2.5s infinite ease-in-out;
+}
+
+.efecto-fuego-interno2 {
+    color: transparent;
+    background-image: linear-gradient(
+        90deg,
+        var(--color-rojo-puro) 0%,
+        #ff6600 25%,
+        var(--color-rojo-intenso) 50%,
+        var(--color-rojo-puro) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(255, 0, 0, 0.5);
+    animation: sangreHirviendo 3s linear infinite,
+               salvadoSiniestro 3s infinite ease-in-out;
+}
+
+.efecto-fuego-interno {
+    background-image: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-stroke: 0 transparent;
+    color: var(--color-blanco) !important;
+    text-shadow:
+        0 0 10px var(--color-cian-victoria),
+        0 0 20px var(--color-cian-victoria),
+        0 0 40px var(--color-cian-oscuro);
+    animation: resplandorCian 3s infinite ease-in-out;
+}
+
+/* === ESTADO: MUERTO === */
+#lineasPalabra.estado-muerto,
+#lineasPalabra.estado-muerto span {
+    color: var(--color-gris-oscuro);
+    text-shadow: none;
+    transition-delay: 2s;
+}
+
+#lineasPalabra.estado-muerto span.letra-fantasma {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(102, 102, 102, 0.5);
+    text-shadow: none;
+    transition: none;
+    opacity: 0;
+    animation: aparicionFantasma 4.5s ease-in-out forwards;
+    animation-delay: 3.5s;
+}
+
+.envoltorio-estaca.estado-muerto input {
+    filter: grayscale(100%);
+    transition: all 1.5s ease-in-out;
+    transition-delay: 1s;
+}
+
+#letrasUsadasTexto.estado-muerto,
+#letrasUsadasTexto.estado-muerto span {
+    color: var(--color-gris-oscuro);
+    text-shadow: none;
+    transition: all 1.2s ease-in-out;
+    transition-delay: 0.6s;
+}
+
+/* === ESTADO: VICTORIA === */
+.letra-ganadora {
+    color: var(--color-blanco) !important;
+    text-shadow: 0 0 10px var(--color-cian-victoria), 
+                 0 0 20px var(--color-cian-victoria), 
+                 0 0 30px var(--color-cian-oscuro) !important;
+    animation: levitacionTriunfal 2s infinite ease-in-out;
+    display: inline-block;
+}
+
+.animar-victoria,
+.animar-victoria span{
+    color: var(--color-cian-victoria) !important;
+    font-family: var(--fuente-principal);
+    animation: pulsoGloria 2.5s ease-in-out forwards;
+    display: block;
+    margin-top: -15px;
+    z-index: 10;
+    opacity: 0.4;
+    filter: blur(0.8px);
+}
+
+#letrasUsadasTexto.estado-victoria,
+#letrasUsadasTexto.estado-victoria span {
+    color: var(--color-cian-victoria);
+    border-bottom-color: var(--color-cian-victoria);
+    text-shadow: 0 0 0 var(--color-cian-victoria);
+    transition: all 2s ease-in-out;
+    opacity: 0.4;
+    filter: blur(0.8px);
+}
+
+.envoltorio-estaca.estado-victoria input {
+    color: var(--color-blanco);
+    text-shadow: 0 0 8px var(--color-cian-victoria);
+    filter: blur(0.8px);
+    background-image: linear-gradient(
+        to right,
+        transparent 0%,
+        var(--color-cian-victoria) 25%,
+        var(--color-cian-victoria) 75%,
+        transparent 100%
+    );
+    opacity: 0.4;
+    transition: all 2.5s ease-in-out;
+}
+
+/* Variante blanco lunar para dibujo */
+.dibujo-victoria-blanco {
+    color: var(--color-blanco);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+    transition: all 1.5s ease-in-out;
+}
+
+/* Variante cian para dibujo */
+.dibujo-victoria-cian {
+    color: var(--color-cian-victoria) !important;
+    text-shadow: 0 0 5px var(--color-cian-victoria),
+                 0 0 15px var(--color-cian-victoria),
+                 0 0 30px var(--color-cian-medio) !important;
+    transition: all 1.5s ease-in-out;
+    opacity: 0.4;
+    filter: blur(0.8px);
+    font-size: 5vw;
+    min-height: 180px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 20px auto !important;
+    margin-bottom: 20px !important;
+}
+
+/* Animación de condena (frase temática) */
+.animar-condena {
+    animation: flickerMaldito 2.5s ease-out 1;
+}
+
+/* Animación de latido de corazón */
+.latido-corazon {
+    animation: latir 1s infinite;
+}
+
+/* Pantalla temblando */
+.pantalla-temblando {
+    animation: temblor 0.4s ease;
+}
+
+/* ================================================================
+   9. MODALES Y OVERLAYS
+   ================================================================ */
+
+/* Modal principal */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-family: var(--fuente-principal);
+}
+
+#modal-caja {
+    font-size: 6vw;
+    background-color: var(--color-negro);
+    border: 2px solid var(--color-rojo-oscuro);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 0 20px #ff00004a;
+}
+
+#modal-btn {
+    font-size: 4vw;
+    padding: 3% 7%;
+    margin: 4%;
+}
+
+/* Modal de confirmación de salida */
+#modal-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.90);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.botones-confirmacion {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+#btn-confirm-si {
+    background-color: var(--color-rojo-oscuro);
+    color: var(--color-gris-claro);
+    border: 1px solid var(--color-rojo-puro);
+}
+
+#btn-confirm-si:hover {
+    background-color: var(--color-rojo-puro);
+    color: white;
+    cursor: pointer;
+}
+
+#btn-confirm-no {
+    cursor: pointer;
+}
+
+/* Bloqueo de rotación */
+#bloqueo-rotacion {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000;
+    color: var(--color-rojo-puro);
+    z-index: 9999;
+    text-align: center;
+    padding-top: 20%;
+}
+
+/* ================================================================
+   10. PANTALLA DE CONFIGURACIÓN
+   ================================================================ */
+
+#pantalla-configuracion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    width: 100%;
+    height: 100svh;
+    box-sizing: border-box;
+    z-index: 50;
+    background-color: var(--color-negro-2);
+    overflow-y: auto;
+    padding: clamp(15px, 5vw, 20px);
+    padding-bottom: 60px;
+}
+
+#pantalla-configuracion h2 {
+    font-family: var(--fuente-maquina);
+    color: var(--color-rojo-claro);
+    text-shadow: 0 0 10px var(--color-rojo-puro);
+    text-align: center;
+    margin-bottom: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.seccion-config {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed var(--color-rojo-muy-oscuro);
+}
+
+.seccion-config h3 {
+    color: #aa0000;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.opcion-config {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    color: var(--color-gris-medio);
+    font-size: clamp(1rem, 4.5vw, 1rem);
+}
+
+.opcion-columna {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    color: var(--color-gris-medio);
+    text-align: left;
+}
+
+.opcion-columna span {
+    margin-bottom: 8px;
+}
+
+.nota-config {
+    font-size: 0.8rem;
+    color: var(--color-gris-cadaver);
+    font-style: italic;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.grupo-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.zona-peligro {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.caja-concepto {
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--color-rojo-muy-oscuro);
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.caja-concepto p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+/* ================================================================
+   11. PANELES ESPECIALES (DEFINICIÓN, POST-PARTIDA)
+   ================================================================ */
+
+/* Panel de definición final */
+#panel-definicion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+    animation: aparecer-suave 0.5s ease-in;
+}
+/* 1. EL TÍTULO DINÁMICO (Ej: "UN ALMA SABIA...", "TU IGNORANCIA...") */
+#titulo-definicion-rnd {
+    font-family: var(--fuente-maquina); /* Fuente ritual gótica */
+    color: var(--color-gris-claro);
+    font-size: 0.9rem;
+    letter-spacing: 2px; /* Separación fantasmal entre letras */
+    margin-bottom: 0;
+    text-align: center;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.15); /* Brillo espiritual sutil */
+    display: block;
+}
+/* 2. EL CONTENEDOR (Garantiza cero líneas grises y espacio perfecto) */
+/* --- ESTILOS DEL MARCO GÓTICO (Cuerpo Principal) --- */
+.caja-concepto-final.marco-gotico {
+    /* 1. Preparación para las esquinas (Siguiente paso) */
+    position: relative; 
+    
+    /* 2. El vacío central oscuro */
+    background-color: var(--marco-fondo);
+    
+    /* 3. El doble delineado (El truco geométrico) */
+    border: 2px solid var(--marco-trazo-interior); /* Línea roja fina interior */
+    outline: 2px solid var(--marco-trazo-exterior); /* Marco oscuro grueso exterior */
+    outline-offset: 4px; /* Crea el "canal" vacío entre ambas líneas */
+    
+    /* 4. Profundidad 3D (Negative Space y Resplandor) */
+    box-shadow: 
+        0 0 20px rgba(138, 3, 3, 0.3),       /* Resplandor carmesí hacia afuera */
+        inset 0 0 40px rgba(0, 0, 0, 0.95);  /* Sombra negra devorando el interior */
+        
+    /* 5. Espaciado vital */
+    width: 85%;                /* Usa el 85% de la pantalla, sea cual sea el celular */
+    max-width: 500px;          /* Pone un límite para que no sea gigante en PC/Tablets */
+    padding: 3% 5%;            /* El relleno interno crece o se encoge según la pantalla */
+    margin: 0 auto 30px auto;         /* Margen dinámico basado en la altura de la pantalla (5%) */
+    box-sizing: border-box;
+    
+    /* Alinear el contenido interno ordenadamente */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;     /* Evita que se desborde en celulares muy pequeños */
+}
+/* --- 2. DOMANDO LOS TEXTOS INTERNOS --- */
+#panel-definicion .caja-concepto-final.marco-gotico p {
+    margin: 0; /* Matamos los márgenes gigantes por defecto del navegador */
+    line-height: 0; /* Ajustamos el espacio entre líneas de un mismo párrafo */
+}
+/* --- 3. RESPIRO PARA EL TÍTULO --- */
+#titulo-definicion-rnd {
+    margin-top: 10px !important; /* Le damos una sutil separación solo debajo del título */
+}
+/* --- 4. LAS PUNTAS GÓTICAS (Rombos forjados) --- */
+/* Base geométrica para las 4 esquinas */
+#panel-definicion .caja-concepto-final.marco-gotico::before,
+#panel-definicion .caja-concepto-final.marco-gotico::after,
+#titulo-definicion-rnd::before,
+#titulo-definicion-rnd::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: var(--marco-fondo); /* Fondo negro para "cortar" el marco exterior */
+    border: 2px solid var(--marco-esquinas); /* Color rojo de la forja */
+    transform: rotate(45deg); /* Giramos el cuadrado para hacer un rombo/punta */
+    z-index: 5; /* Asegura que floten por encima de las líneas */
+    box-shadow: 0 0 8px rgba(138, 3, 3, 0.6); /* Pequeño resplandor carmesí */
+}
+/* Esquina Superior Izquierda (Prestada del Marco) */
+#panel-definicion .caja-concepto-final.marco-gotico::before {
+    top: -8px;
+    left: -8px;
+}
+/* Esquina Inferior Derecha (Prestada del Marco) */
+#panel-definicion .caja-concepto-final.marco-gotico::after {
+    bottom: -8px;
+    right: -8px;
+}
+/* Esquina Superior Derecha (Prestada del Título) */
+#titulo-definicion-rnd::before {
+    top: -8px;
+    right: -8px;
+}
+/* Esquina Inferior Izquierda (Prestada del Título) */
+#titulo-definicion-rnd::after {
+    bottom: -8px;
+    left: -8px;
+}
+/* 3. EL CONCEPTO (La definición de diccionario antiguo) */
+#texto-concepto-final {
+    font-family: var(--fuente-crimson); /* Estilo hoja de grimorio */
+    color: var(--color-gris-medio);
+    font-size: 1rem; /* Un pelín más grande para mejorar la lectura rápida */
+    line-height: 1.45;
+    margin: 0 0 0 0 !important; /* Separación limpia con el ejemplo */
+    text-align: justify; /* Mantiene tus márgenes rectos a los lados */
+    opacity: 0.85;
+}
+/* 4. EL EJEMPLO (La sentencia o cita trágica) */
+#texto-ejemplo-final {
+    font-family: var(--fuente-crimson);
+    color: var(--color-rojo-claro) !important; /* Rojo brillante que resalta en la oscuridad */
+    font-style: italic;
+    font-size: 0.95rem;
+    font-weight: 700; /* Letra con más cuerpo */
+    line-height: 1.3;
+    text-align: center; /* ¡CAMBIO CLAVE! Las citas en el centro ganan un peso dramático brutal */
+    margin: 0 !important;
+    letter-spacing: 0.5px;
+}
+
+/* ================================================================
+   12. ANIMACIONES (@keyframes)
+   ================================================================ */
+
+@keyframes latidoSiniestro {
+    0% {
+        text-shadow: 0 0 5px #2b0000, 0 0 10px #2b0000;
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 15px var(--color-rojo-puro),
+                     0 0 20px var(--color-rojo-puro),
+                     0 0 45px var(--color-rojo-intenso);
+        transform: scale(1);
+    }
+    100% {
+        text-shadow: 0 0 5px #2b0000, 0 0 10px #2b0000;
+        transform: scale(1);
+    }
+}
+
+@keyframes salvadoSiniestro {
+    0% {
+        text-shadow: 0 0 10px var(--color-rojo-puro),
+                     0 0 20px var(--color-rojo-puro),
+                     0 0 30px var(--color-rojo-intenso);
+    }
+    33% {
+        text-shadow: 2px 0 12px var(--color-rojo-claro),
+                     0 0 25px #ff1a1a,
+                     0 0 35px #990000;
+    }
+    66% {
+        text-shadow: -2px 0 15px #e60000,
+                     0 0 22px var(--color-rojo-intenso),
+                     0 0 40px #660000;
+    }
+    100% {
+        text-shadow: 0 0 10px var(--color-rojo-puro),
+                     0 0 20px var(--color-rojo-puro),
+                     0 0 30px var(--color-rojo-intenso);
+    }
+}
+
+@keyframes parpadeoFantasma {
+    0%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 5px var(--color-rojo-puro),
+                     0 0 10px var(--color-rojo-oscuro);
+    }
+    2% {
+        opacity: 0.1;
+        text-shadow: none;
+    }
+    4% {
+        opacity: 1;
+        text-shadow: 0 0 5px var(--color-rojo-puro),
+                     0 0 10px var(--color-rojo-oscuro);
+    }
+    5% {
+        opacity: 0.1;
+        text-shadow: none;
+    }
+    6% {
+        opacity: 1;
+        text-shadow: 0 0 10px var(--color-rojo-puro),
+                     0 0 20px var(--color-rojo-puro);
+    }
+    8% {
+        opacity: 0.5;
+        text-shadow: 0 0 2px var(--color-rojo-puro);
+    }
+    10% {
+        opacity: 1;
+        text-shadow: 0 0 5px var(--color-rojo-puro),
+                     0 0 10px var(--color-rojo-oscuro);
+    }
+}
+
+@keyframes respiracionAbismo {
+    0% {
+        transform: scale(1);
+        text-shadow: 2px 2px 4px var(--color-rojo-sombra);
+    }
+    50% {
+        transform: scale(1.04);
+        text-shadow: 0 0 25px var(--color-rojo-puro);
+        color: #ff1a1a;
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 2px 2px 4px var(--color-rojo-sombra);
+    }
+}
+
+@keyframes sangreHirviendo {
+    0% {
+        background-position: 0% center;
+    }
+    100% {
+        background-position: -200% center;
+    }
+}
+
+@keyframes resplandorCian {
+    0% {
+        text-shadow: 0 0 4px var(--color-blanco),
+                     0 0 10px var(--color-cian-victoria),
+                     0 0 20px var(--color-cian-victoria);
+    }
+    50% {
+        text-shadow: 0 0 6px var(--color-blanco),
+                     0 0 20px var(--color-cian-victoria),
+                     0 0 40px var(--color-cian-victoria),
+                     0 0 60px var(--color-cian-oscuro);
+    }
+    100% {
+        text-shadow: 0 0 4px var(--color-blanco),
+                     0 0 10px var(--color-cian-victoria),
+                     0 0 20px var(--color-cian-victoria);
+    }
+}
+
+@keyframes aparicionFantasma {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes levitacionTriunfal {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulsoGloria {
+    0% {
+        color: var(--color-blanco);
+        text-shadow: 0 0 8px var(--color-cian-victoria),
+                     0 0 15px var(--color-cian-victoria),
+                     0 0 25px var(--color-cian-oscuro);
+    }
+    100% {
+        color: var(--color-cian-victoria);
+        text-shadow: 0 0 8px var(--color-cian-victoria),
+                     0 0 15px var(--color-cian-victoria),
+                     0 0 25px var(--color-cian-oscuro);
+    }
+}
+
+@keyframes latir {
+    0% {
+        transform: scale(1);
+        text-shadow: 1px 1px 5px #ff00007a;
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 15px var(--color-rojo-puro);
+        color: var(--color-rojo-claro);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 1px 1px 5px #ff00007a;
+    }
+}
+
+@keyframes temblor {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes flickerMaldito {
+    0% {
+        opacity: 0;
+        color: var(--color-rojo-puro);
+        text-shadow: 0 0 15px var(--color-rojo-puro);
+    }
+    10%, 15%, 20%, 30%, 35%, 50%, 60%, 80% {
+        opacity: 1;
+        color: #ff1a1a;
+        text-shadow: 0 0 20px var(--color-rojo-puro);
+    }
+    5%, 12%, 18%, 25%, 32%, 45%, 55%, 70% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        color: var(--color-gris-fantasma);
+        text-shadow: none;
+    }
+}
+
+@keyframes aparecer-suave {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================================
+   13. MEDIA QUERIES
+   ================================================================ */
+
+/* Bloqueo de rotación en landscape con pantalla pequeña */
+@media (orientation: landscape) and (max-height: 600px) {
+    #bloqueo-rotacion {
+        display: block;
+    }
+
+    #pantalla-menu,
+    #modal-overlay,
+    .contenedor-juego {
+        display: none;
+    }
+}
+
+/* --- PRUEBA TEMPORAL: Textos Fantasmas --- */
+#panel-definicion .caja-concepto-final.marco-gotico p,
+#panel-definicion .caja-concepto-final.marco-gotico span {
+    color: var(--color-gris-fantasma) !important;
+}

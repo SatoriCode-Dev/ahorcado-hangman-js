@@ -1,281 +1,17 @@
-// 1. DEPARTAMENTO DE DATOS
-const BaseDeDatos = { // Objeto Literal
-    nivelDificil: [
-        "WHISKY", "KIWI", "FUGAZ", "MIXTO", "JUZGAR", "YUNQUE", "AÑEJO", "ZURDO", "BIZCOCHO", "YELMO",
-        "HALLAZGO", "TORAX", "LUZ", "EXIGIR", "ZIGZAG", "KAYAK", "ALMIZCLE", "ALZHEIMER", "PINZA", "SUBDITO"
-    ],
-    frasesTerror: [
-        "El verdugo sonríe...", "Siento tu miedo", "Un paso más cerca del abismo", "La cuerda se tensa...",
-        "Escucho tu respiración...", "Nadie vendrá a salvarte...", "Tus latidos te delatan...", 
-        "El frío abraza tu cuello...", "Tus opciones se agotan...", "Un paso más hacia el vacío..."
-    ],
-    dibujosASCII: [        
-    `\n\n\n\n\n\n`, // [0] Indice 0: Lienzo vacío    
-    `\n      |\n      |\n      |\n      |\n      |\n=========`, // [1] Indice 1: Piso y Poste    
-    `  +---+\n      |\n      |\n      |\n      |\n      |\n=========`, // [2] Indice 2: Techo    
-    `  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========`, // [3] Indice 3: La soga    
-    `  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========`, // [4] Indice 4: La cabeza    
-    `  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========`, // [5] Indice 5: El cuerpo    
-    `  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========`, // [6] Indice 6: Un brazo (izquierdo)    
-    `  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========`, // [7] Indice 7: Otro brazo (derecho)    
-    `  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========`, // [8] Indice 8: Una pierna (izquierda)    
-    `  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n=========`, // [9] Indice 9: Otra pierna (derecha) - Muñeco completo    
-    `  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n` // [10] Indice 10: Sentenciado (Se borra el suelo para dar espacio a la frase)
-    ],    
-    dibujoVictoria: [
-        `\n  +---+\n  |   |\n      |\n  O   |\n /|\\  |\n / \\  |\n`
-    ],
-    dibujoMenu: `\n  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========`,    
-    dibujosASCIIFinal: [
-        /* 0: El inicio pacífico (Fácil) */
-        `\n\n\n\n\n=========`, 
-        
-        /* 1: Poste vertical */
-        `\n  |\n  |\n  |\n  |\n  |\n=========`, 
-        
-        /* 2: Viga superior */
-        `\n  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========`, 
-        
-        /* 3: La Cuerda (Aquí empieza la dificultad Media) */
-        `\n  +---+\n  |   |\n  |   |\n      |\n      |\n      |\n=========`, 
-        
-        /* 4: La Silla/Plataforma (Aquí empieza el "Nivel Imposible") */
-        `\n  +---+\n  |   |\n  |   |\n      |\n     [ ]\n     [ ]\n=========`, 
-        
-        /* 5: Sube una pierna */
-        `\n  +---+\n  |   |\n  |   |\n      |\n      /\n     [ ]\n=========`, 
-        
-        /* 6: Sube la otra pierna */
-        `\n  +---+\n  |   |\n  |   |\n      |\n     / \\\n     [ ]\n=========`, 
-
-        /* 7: El Torso */
-        `\n  +---+\n  |   |\n  |   |\n      |\n      |\n     / \\\n     [ ]\n=========`,
-
-        /* 8: Los Brazos */
-        `\n  +---+\n  |   |\n  |   |\n     /|\\\n      |\n     / \\\n     [ ]\n=========`,
-
-        /* 9: La Cabeza (Ultimo turno) */
-        `\n  +---+\n  |   |\n  |   |\n      O\n     /|\\\n     / \\\n     [ ]\n=========`,
-
-        /* 10: ¡DERROTA! (La silla desaparece, el cuerpo cae) */
-        `\n  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n=========`, 
-    ]
-};
-
-// 2. DEPARTAMENTO DE IDIOMAS
-const DiccionarioIdioma = {
-    es: {
-        // Pantalla de Bienvenida
-        bienvenidaTitulo: "<span class='texto-terror'>El abismo te da <br>la bienvenida</span>",
-        bienvenidaMensaje: "Entrar es la parte fácil <br><span class='texto-terror'>Salir te costará más</span>",
-        btnBienvenida: "Adelante",
-                
-        // Menú Principal
-        tituloPrincipal: "Ahorcado",
-        textoDestino: "Elige tu destino:",
-        fraseTematica: '"Alguien debe ocupar este lugar..."',
-        btnHistoria: "MODO HISTORIA <br><span class='subtitulo'>✟ Desafía al abismo ✟</span>",
-        btnSistema: "PRÁCTICA<br><span class='subtitulo'>Juega contra el sistema</span>",
-        btnAmigo: "MULTIJUGADOR<br><span class='subtitulo'>Condena a un Amigo</span>",
-        modalSalirMenuTitulo: "¿Salir?",
-        modalSalirMenuMensaje: "<span class='texto-terror'>No hay escapatoria de este lugar</span>",
-        
-        // Configuración
-        tituloConfig: "Leyes del Abismo",
-        lblSentidos: "Sentidos",
-        lblMusica: "Música de Ambiente",
-        lblSfx: "Efectos Visuales/Sonoros",
-        lblLengua: "Lengua",
-        lblTurnos: "Turnos de Vida",
-        lblTiempo: "Tiempo Límite",
-        lblIdioma: "Idioma / Language",
-        estadoEncendida: "[ ENCENDIDA ]",
-        estadoApagada: "[ APAGADA ]",
-        estadoEncendidos: "[ ENCENDIDOS ]",
-        estadoApagados: "[ APAGADOS ]",
-        tituloDificultad: "Dificultad (Modo Libre)",
-        textoDificultad: "Demuestra tu valor en el Modo Historia para romper las cadenas.",
-        lblTurnosMorir: "Turnos antes de morir:",
-        lblTiempoMaximo: "Tiempo Máximo (Cronómetro):",
-        btnTiempoNinguno: "Ninguno",
-        btnBorrarProgreso: "Borrar Progreso",
-        
-        // Alertas y Textos Dinámicos
-        alertaLetraVacia: "¡Escribe una letra antes de sellar tu destino!",
-        alertaPalabraVacia: "¡Escribe una sentencia antes de empezar!",
-        alertaLetraRepetida: "¿Los nervios no te dejan pensar? Ya usaste esa letra.",
-        letrasPurgatorio: "Letras en el purgatorio: <br>",
-        btnAccionAdivinar: "Adivinar",
-        btnSellarDestino: "Sellar Destino",
-        
-        // Pantalla Palabra (Multijugador)
-        pantallaPalabraTitulo: "Dicta la sentencia",
-        pantallaPalabraAviso: "El abismo solo entiende letras. Sin números ni símbolos.",
-        placeholderAmigo: "Asegúrate de que nadie vea",
-        btnSellarDestinoAmigo: "Sellar su destino",
-        
-        // Pantalla Juego (Cabecera)
-        lblTiempoJuego: "Tiempo:",
-        lblTurnosJuego: "Turnos:",
-        
-        // Textos del Juego y Derrota
-        tituloJuego: "¡Adivina o muere!",
-        tituloDerrota: "¡Ahorcado!",
-        fraseSentenciaDerrota: "_†_ ESTÁS CONDENADO _†_",
-        modalDerrotaTitulo: "¡Has sellado tu destino!",
-        modalDerrotaMensaje: "La soga se ha cerrado por completo... Tu alma ahora nos pertenece.",
-        modalDerrotaTiempoTitulo: "¡Muy Lento!",
-        btnRevivir: "Revivir",
-        
-        // Modal de Confirmación (Salir)
-        modalConfirmTitulo: "¿Huir como cobarde?",
-        modalConfirmMensaje: "Si vuelves al menú, tu progreso se perderá en el abismo.",
-        btnConfirmSi: "Sí, huir",
-        btnConfirmNo: "No, me quedo",
-        btnSalir: "Salir",
-        
-        // Modal de Victoria y Conceptos
-        modalVictoriaTitulo: "¡Absolución concedida!",
-        modalVictoriaMensaje: "La soga se afloja... Has burlado al verdugo por ahora.",
-        btnSiguientePrueba: "Siguiente prueba",
-        etiquetaPalabra: "Palabra:",
-        etiquetaVeredicto: "El Veredicto:",
-        tituloSalvado: "Salvado",
-        fraseSentenciaVictoria: "_†_¡BURLASTE AL VERDUGO!_†_",
-        conceptoAmigo: "Palabra dictada por un alma corrupta.",
-        ejemploAmigo: "No confíes en quien te invita a jugar con la muerte.",
-    },
-    en: {
-        // First-Time Welcome Screen
-        bienvenidaTitulo: "<span class='texto-terror'>The abyss <br>welcomes you</span>",
-        bienvenidaMensaje: "Entering is the easy part... <br><span class='texto-terror'>Leaving will cost you dearly</span>",
-        btnBienvenida: "Descend",
-        
-        // Main Menu
-        tituloPrincipal: "Hangman",
-        textoDestino: "Choose your fate:",
-        fraseTematica: '"Someone must take this place..."',
-        btnHistoria: "STORY MODE <br><span class='subtitulo'>✟ Defy the abyss ✟</span>",
-        btnSistema: "PRACTICE<br><span class='subtitulo'>Play vs the system</span>",
-        btnAmigo: "MULTIPLAYER<br><span class='subtitulo'>Condemn a Friend</span>",
-        modalSalirMenuTitulo: "Quit?",
-        modalSalirMenuMensaje: "<span class='texto-terror'>There is no escape from this place</span>",
-        
-        // Settings
-        tituloConfig: "Settings",
-        lblSentidos: "Senses",
-        lblMusica: "Ambient Music",
-        lblSfx: "Visual/Sound FX",
-        lblLengua: "Language",
-        lblTurnos: "Life Turns",
-        lblTiempo: "Time Limit",
-        lblIdioma: "Idioma / Language",
-        estadoEncendida: "[ ON ]",
-        estadoApagada: "[ OFF ]",
-        estadoEncendidos: "[ ON ]",
-        estadoApagados: "[ OFF ]",
-        tituloDificultad: "Difficulty (Free Mode)",
-        textoDificultad: "Prove your worth in Story Mode to break the chains.",
-        lblTurnosMorir: "Turns before death:",
-        lblTiempoMaximo: "Max Time (Timer):",
-        btnTiempoNinguno: "None",
-        btnBorrarProgreso: "Clear Progress",
-        
-        // Alerts and dynamic texts
-        alertaLetraVacia: "Write a letter before sealing your fate!",
-        alertaPalabraVacia: "Write a sentence before starting!",
-        alertaLetraRepetida: "Nerves blocking your thoughts? You already used that letter.",
-        letrasPurgatorio: "Letters in purgatory: <br>",
-        btnAccionAdivinar: "Guess",
-        btnSellarDestino: "Seal Fate",
-        
-        // Multiplayer Word Screen
-        pantallaPalabraTitulo: "Dictate the sentence",
-        pantallaPalabraAviso: "The abyss only understands letters. No numbers or symbols.",
-        placeholderAmigo: "Make sure no one is watching",
-        btnSellarDestinoAmigo: "Seal their fate",
-        
-        // Game Screen (Header)
-        lblTiempoJuego: "Time:",
-        lblTurnosJuego: "Turns:",
-        
-        // Game text and defeat
-        tituloJuego: "Guess or perish!",
-        tituloDerrota: "Hanged!",
-        fraseSentenciaDerrota: "_†_ YOU ARE CONDEMNED _†_",
-        modalDerrotaTitulo: "You sealed your fate!",
-        modalDerrotaMensaje: "The noose tightens... Your soul is ours now.",
-        modalDerrotaTiempoTitulo: "Too Slow!",
-        btnRevivir: "Resurrect",
-        
-        // Confirmation dialog (exit)
-        modalConfirmTitulo: "Flee like a coward?",
-        modalConfirmMensaje: "The abyss will swallow your progress. There is no turning back.",
-        btnConfirmSi: "Succumb",
-        btnConfirmNo: "I will not yield",
-        btnSalir: "Exit",
-        
-        // Winning dialog and concepts
-        modalVictoriaTitulo: "Absolution granted!",
-        modalVictoriaMensaje: "The noose loosens... You've cheated the hangman for now.",
-        btnSiguientePrueba: "Next trial",
-        etiquetaPalabra: "Word:",
-        etiquetaVeredicto: "The Verdict:",
-        tituloSalvado: "Spared",
-        fraseSentenciaVictoria: "_†_YOU'VE CHEATED THE HANGMAN_†_",
-        conceptoAmigo: "Word dictated by a corrupt soul.",
-        ejemploAmigo: "Do not trust the one who invites you to play with death.",
-    }
-};
-
-const BibliotecaMaldita = {
-    es: {
-        practica: [
-            { 
-                palabra: "CEMENTERIO", 
-                concepto: "Terreno donde se entierran los cadáveres.", 
-                ejemplo: "El silencio del cementerio es solo una ilusión para los vivos." 
-            },
-            { 
-                palabra: "CADENA", 
-                concepto: "Sucesión de eslabones metálicos usados para privar de libertad.", 
-                ejemplo: "Tus errores son la cadena que te arrastrará al fondo del abismo." 
-            }
-        ],
-        historia: {
-            nivel1: [
-                { 
-                    palabra: "TUMBA", 
-                    concepto: "Excavación en la tierra para enterrar un cadáver.", 
-                    ejemplo: "Al final, todas las riquezas del mundo se quedan fuera de la tumba." 
-                }
-            ]
-        }
-    },
-    en: {
-        practica: [
-            { 
-                palabra: "CEMETERY", 
-                concepto: "A large burial ground, especially one not in a churchyard.", 
-                ejemplo: "The silence of the cemetery is only an illusion for the living." 
-            },
-            { 
-                palabra: "CHAIN", 
-                concepto: "A series of linked metal rings used for fastening or securing.", 
-                ejemplo: "Your mistakes are the chain that will drag you down into the abyss." 
-            }
-        ],
-        historia: {
-            nivel1: [
-                { 
-                    palabra: "TOMB", 
-                    concepto: "A large vault, typically an underground one, for burying the dead.", 
-                    ejemplo: "In the end, all the wealth in the world stays outside the tomb." 
-                }
-            ]
-        }
-    }
-};
+// =================================
+//        MÁQUINA DE ESTADOS
+// =================================
+const ESTADO_JUEGO = Object.freeze({
+    BIENVENIDA: "BIENVENIDA",
+    MENU: "MENU",
+    CONFIGURACION: "CONFIGURACION",
+    INGRESO_PALABRA: "INGRESO_PALABRA",
+    JUGANDO: "JUGANDO",
+    PAUSA_MODAL: "PAUSA_MODAL",
+    TERMINADO: "TERMINADO",
+    VICTORIA: "VICTORIA",
+    DERROTA: "DERROTA"
+});
 
 // 2. DEPARTAMENTO DE AUDIO (AudioController)
 class ControladorAudio {
@@ -297,6 +33,20 @@ class ControladorAudio {
         this.latido.loop = true;
         this.musicaActiva = true;
         this.sfxActivos = true;
+        
+        // Diccionario dinámico de sonidos
+        this.catalogo = {
+            "derrota": this.risasSatanicas,
+            "victoria1": this.boooh,
+            "victoria2": this.ahhh,
+            "click": this.aClick,
+            "destino": this.aDestino,
+            "adivinar": this.aAdivinar,
+            "burla": this.risaBurlona,
+            "risa": this.muahaha,
+            "grito": this.gritoEco,
+            "latido": this.latido
+        };
     }
     
     iniciarMusica() {
@@ -317,76 +67,19 @@ class ControladorAudio {
         this.iniciaJuego.play();
         this.ambiente.pause();
         }
+    }    
+    // MÉTODO MAESTRO DE EFECTOS ESPECIALES
+    reproducir(efecto) {
+        if (!this.sfxActivos || !this.catalogo[efecto]) return; // Guardia de seguridad                
+        this.catalogo[efecto].currentTime = 0;
+        this.catalogo[efecto].play();        
     }
-    
-    sonidoDerrota() {
-       if (this.sfxActivos) {
-        this.risasSatanicas.currentTime = 0;
-        this.risasSatanicas.play();
-       }
-    }
-    
-    sonidoVictoria2() {
-        if (this.sfxActivos) {
-            this.ahhh.currentTime = 0;
-            this.ahhh.play();
+    // MÉTODO MAESTRO PARA SILENCIAR EFECTOS
+    detener(efecto) {
+        if (this.catalogo[efecto]) {
+            this.catalogo[efecto].pause();
+            this.catalogo[efecto].currentTime = 0;
         }
-    }
-    
-    sonidoVictoria() {
-        if (this.sfxActivos) {
-            this.boooh.currentTime = 0;
-            this.boooh.play();
-        }
-    }
-    
-    botonClick() {
-        if (this.sfxActivos) {
-            this.aClick.currentTime = 0;        
-            this.aClick.play();
-        }
-    }
-    
-    botonDestino() {
-        if (this.sfxActivos) {
-            this.aDestino.currentTime = 0;        
-            this.aDestino.play();
-        }
-    }
-    
-    botonAdivinar() {
-        if (this.sfxActivos) {
-            this.aAdivinar.currentTime = 0;
-            this.aAdivinar.play();
-        }
-    }
-    
-    reproducirBurla() {
-        if (this.sfxActivos) {
-            this.risaBurlona.currentTime = 0;
-            this.risaBurlona.play();
-        }
-    }
-    
-    reproducirRisa() {
-        if (this.sfxActivos) {
-            this.muahaha.currentTime = 0;
-            this.muahaha.play();
-        }
-    }
-    
-    reproducirGrito() {
-        if (this.sfxActivos) {
-            this.gritoEco.currentTime = 0;
-            this.gritoEco.play();
-        }
-    }
-    
-    reproducirLatido() {
-       if (this.sfxActivos) {
-           this.latido.currentTime = 0;
-           this.latido.play();
-       }
     }
 }
 
@@ -426,7 +119,8 @@ class Configuracion {
         // --- PARCHES DE SEGURIDAD PARA MEMORIAS VIEJAS ---
         if (this.estado.turnos === undefined) this.estado.turnos = 10;
         if (this.estado.tiempo === undefined) this.estado.tiempo = 0;
-        if (this.estado.idioma === undefined) this.estado.idioma = idiomaPorDefecto;        
+        if (this.estado.idioma === undefined) this.estado.idioma = idiomaPorDefecto;  
+		if (this.estado.skin === undefined) this.estado.skin = "ascii";
         this.guardarMemoria(); // Guardamos los datos actualizados
         // 5. Inicializar la pantalla y mandar las órdenes
         this.aplicarConfiguracion();        
@@ -500,6 +194,12 @@ class Configuracion {
         }        
         // 2. Le ordenamos a la interfaz que traduzca todo al idioma actual
         this.ui.traducirPantalla(this.estado.idioma);
+		
+		// --- PARA LA SKIN VISUAL ---
+        // 1. Igualamos el selector del HTML con lo que hay en memoria
+        this.ui.selectorSkin.value = this.estado.skin;        
+        // 2. Le ordenamos a la interfaz que aplique las clases ocultas y prenda/apague la CPU
+        this.ui.configurarSkinVisual(this.estado.skin);
     }    
     // Método que escucha cuando el usuario hace clic en los botones
     asignarEventos() {
@@ -507,7 +207,7 @@ class Configuracion {
             this.estado.musica = !this.estado.musica; // Invierte el valor (true a false y viceversa)
             this.guardarMemoria(); // Guarda el cambio
             this.aplicarConfiguracion(); // Actualiza la pantalla y el audio
-            this.audio.botonClick(); // Suena (solo si los SFX están activos)
+            this.audio.reproducir("click"); // Suena (solo si los SFX están activos)
         });
         
         this.btnSfx.addEventListener("click", () => {
@@ -532,7 +232,7 @@ class Configuracion {
                 this.aplicarConfiguracion();
                 
                 if (this.estado.sfx === true) { 
-                    this.audio.botonClick(); 
+                    this.audio.reproducir("click"); 
                 }
             });
         });
@@ -555,7 +255,7 @@ class Configuracion {
                 this.aplicarConfiguracion();
                 
                 if (this.estado.sfx === true) { 
-                    this.audio.botonClick(); 
+                    this.audio.reproducir("click"); 
                 }
             });
         });
@@ -565,14 +265,26 @@ class Configuracion {
             this.estado.idioma = "es"; // Cambiamos la memoria a español
             this.guardarMemoria(); // Guardamos
             this.aplicarConfiguracion(); // Actualizamos botones y traducimos pantalla
-            if (this.estado.sfx) { this.audio.botonClick(); } // Sonido
+            if (this.estado.sfx) { this.audio.reproducir("click"); } // Sonido
         });
         this.btnLangEn.addEventListener("click", () => {
             this.estado.idioma = "en"; // Cambiamos la memoria a inglés
             this.guardarMemoria(); 
             this.aplicarConfiguracion(); 
-            if (this.estado.sfx) { this.audio.botonClick(); } 
+            if (this.estado.sfx) { this.audio.reproducir("click"); } 
         });
+		
+		// --- EVENTOS PARA EL SELECTOR DE SKIN ---
+        this.ui.selectorSkin.addEventListener("change", (evento) => {
+            // 1. Atrapamos el valor nuevo ("ascii" o "maldito")
+            this.estado.skin = evento.target.value;             
+            // 2. Ciclo sagrado: Guardar, Aplicar, Sonar
+            this.guardarMemoria(); 
+            this.aplicarConfiguracion();             
+            if (this.estado.sfx) { 
+                this.audio.reproducir("click"); 
+            }
+        });	
     }
 }
 
@@ -587,13 +299,16 @@ class Interfaz {
         this.pantallaJuego = document.getElementById("pantalla-juego");
         this.tituloJuego = document.getElementById("iniciaJuego");
         this.dibujoAhorcado = document.getElementById("dibujoAhorcado");
+		this.selectorSkin = document.getElementById("selector-skin");		
+        this.canvasLienzo = document.getElementById("lienzoJuego");
+		this.motorVisual = new MotorGrafico();
         this.mensajeCondena = document.getElementById("mensajeCondena");
+        this.tecladoVirtual = document.getElementById("teclado-virtual");
         this.dibujoMenu = document.getElementById("dibujoMenu");
         
         this.btnSistema = document.getElementById("btnSistema");
         this.btnAmigo = document.getElementById("btnAmigo");
-        this.btnEmpezar = document.getElementById("btnEmpezar");
-        this.btnAdivinar = document.getElementById("btnAdivinar");
+        this.btnEmpezar = document.getElementById("btnEmpezar");        
         this.btnReiniciar = document.getElementById("btnReiniciar");
         this.btnSalir = document.getElementById("btnSalir");
         this.btnConfirmSi = document.getElementById("btn-confirm-si");
@@ -606,11 +321,39 @@ class Interfaz {
         this.modalBoton = document.getElementById("modal-btn");
         this.modalConfirmOverlay = document.getElementById("modal-confirm-overlay");
         
-        this.lineasPalabra = document.getElementById("lineasPalabra");
-        this.inputLetra = document.getElementById("inputLetra"); 
-        this.inputPalabra = document.getElementById("inputPalabra");
-        this.letrasUsadasTexto = document.getElementById("letrasUsadasTexto");
+        this.lineasPalabra = document.getElementById("lineasPalabra");        
+        this.inputPalabra = document.getElementById("inputPalabra");        
         this.tiempoRestante = document.getElementById("tiempoRestante");
+                
+        this.alPresionarTecla = null;// Almacenará la función que el Juego quiere ejecutar cuando se toque una letra        
+        this.tecladoVirtual.addEventListener("click", (evento) => { // DELEGACIÓN DE EVENTOS: Un solo escuchador para todo el contenedor
+            // Verificamos si el clic ocurrió específicamente en un botón de clase "tecla"
+            if (evento.target.classList.contains("tecla") && !evento.target.disabled) {
+                const boton = evento.target;
+                boton.disabled = true; // Lo desactivamos visualmente                
+                // Si el Juego ya nos dio la orden de qué hacer, la ejecutamos pasando la letra
+                if (this.alPresionarTecla) {
+                    this.alPresionarTecla(boton.innerText);
+                }
+            }
+        });
+		// OBJECT POOLING: Creamos el almacén de reciclaje inmediatamente al encender la app
+        this.inicializarPoolDeSpans();
+		
+        this.panelDefinicion = document.getElementById("panel-definicion");
+        this.tituloRnd = document.getElementById("titulo-definicion-rnd");
+        this.textoConcepto = document.getElementById("texto-concepto-final");
+        this.textoEjemplo = document.getElementById("texto-ejemplo-final");
+        this.contenedorBotonFinal = document.getElementById("contenedor-boton-final");
+    }
+	
+	inicializarPoolDeSpans() { // OBJECT POOLING
+        this.lineasPalabra.innerHTML = ""; // Aseguramos que el contenedor esté vacío        
+        for (let i = 0; i < 15; i++) { // Creamos un límite máximo de 15 letras (suficiente para cualquier palabra)
+            const span = document.createElement("span");
+            span.classList.add("oculto"); // Nacen invisibles en el almacén
+            this.lineasPalabra.appendChild(span);
+        }
     }
     
     mostrarJuego() {
@@ -623,6 +366,41 @@ class Interfaz {
         this.pantallaMenu.classList.remove("oculto");
         this.pantallaPalabra.classList.add("oculto");
         this.pantallaJuego.classList.add("oculto");
+    }
+    
+    generarTeclado(idioma, funcionCerebro) {
+        // Limpiamos el contenedor por si había un teclado anterior
+        this.tecladoVirtual.innerHTML = ""; 
+        this.alPresionarTecla = funcionCerebro; // Guardamos la función del cerebro
+        
+        // Definimos los dos teclados
+        const qwertyEs = [
+            ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+            ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ñ"],
+            ["Z", "X", "C", "V", "B", "N", "M"]
+        ];
+        const qwertyEn = [
+            ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+            ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+            ["Z", "X", "C", "V", "B", "N", "M"]
+        ];
+        // Seleccionamos el teclado correcto
+        const tecladoQWERTY = (idioma === "es") ? qwertyEs : qwertyEn;
+        
+        tecladoQWERTY.forEach(fila => {
+            // Creamos un contenedor div para cada fila horizontal
+            const filaDiv = document.createElement("div");
+            filaDiv.classList.add("fila-teclado");
+            
+            fila.forEach(letra => {
+                const botonTecla = document.createElement("button");
+                botonTecla.classList.add("tecla");
+                botonTecla.innerText = letra;
+                botonTecla.id = `tecla-${letra}`;
+                filaDiv.appendChild(botonTecla);
+            });
+            this.tecladoVirtual.appendChild(filaDiv);
+        });
     }
     
     mostrarConfiguracion() {
@@ -639,6 +417,11 @@ class Interfaz {
         this.modalOverlay.classList.add("oculto");
     }
     
+    revelarLetra(indice, letra) {
+        // En lugar de borrar todo, solo busca al hijo exacto y le inyecta la letra
+        this.lineasPalabra.children[indice].innerText = letra;
+    }
+    
     mostrarIngresoPalabra() {
         this.pantallaMenu.classList.add("oculto");
         this.pantallaJuego.classList.add("oculto");
@@ -647,12 +430,55 @@ class Interfaz {
     
     dibujarPalabra(arrayOculto) {
         // Recibimos los guiones bajos o letras adivinadas de class Juego y las dibujamos en la pantalla
-        this.lineasPalabra.innerHTML = arrayOculto.map(caracter => `<span>${caracter}</span>`).join(" ");
+        // Sustituímos this.lineasPalabra.innerHTML = arrayOculto.map(caracter => `<span>${caracter}</span>`).join(" "); por:
+		// En lugar de crear HTML, leemos los 15 spans que ya existen en el DOM
+        const spansExistentes = this.lineasPalabra.children; // OBJECT POOLING
+        for (let i = 0; i < spansExistentes.length; i++) {
+            if (i < arrayOculto.length) {
+                // RECICLAJE: Si la letra existe en la palabra, la activamos
+                spansExistentes[i].textContent = arrayOculto[i];
+                spansExistentes[i].className = ""; // Limpiamos efectos de partidas pasadas (ganadora/fantasma)                
+            } else {
+                // ALMACÉN: Los spans que sobran se limpian y se ocultan para la próxima partida
+                spansExistentes[i].textContent = "";
+                spansExistentes[i].className = "oculto";
+            }
+        }
     }
     
     dibujarAhorcado(fasesAhorcado) {
         // Dibujamos la variable recibida de Logistica dentro del espacio asignado por HTML
         this.dibujoAhorcado.innerHTML = fasesAhorcado;
+    }
+	
+	// Método para alternar vistas al cambiar opciones o niveles
+    configurarSkinVisual(skinActiva) {
+        if (skinActiva === "maldito") {
+            this.dibujoAhorcado.classList.add("oculto");
+            this.canvasLienzo.classList.remove("oculto");
+			this.motorVisual.iniciar(); // OPTIMIZACIÓN: Encendemos los cálculos del procesador
+        } else {
+            this.canvasLienzo.classList.add("oculto");
+            this.dibujoAhorcado.classList.remove("oculto");
+			this.motorVisual.pausar(); // OPTIMIZACIÓN: Apagamos el motor gráfico. Consumo de RAM y CPU = 0.
+        }
+    }
+	
+	// Modifica tu método de refresco para que acepte la skin activa
+    actualizarPantallaDibujo(turnosRestantes, turnosMaximos, skinActiva) {
+        const errores = turnosMaximos - turnosRestantes;
+		
+		console.log("Skin: ", skinActiva);
+		console.log("Errores: ", errores);
+
+        if (skinActiva === "maldito") {
+            // Sincronización instantánea con el número de error actual
+			console.log("Errores enviados", errores);
+            this.motorVisual.actualizarErrores(errores);
+        } else {
+            // Tu lógica clásica de asignación de texto ASCII
+            this.dibujoAhorcado.innerText = BaseDeDatos.dibujosASCII[errores];
+        }
     }
     
     cambiarTitulo(texto) {
@@ -670,9 +496,28 @@ class Interfaz {
     iniciarEfectoTitulo3() {
         this.tituloJuego.classList.add("efecto-fuego-interno");        
     }
-    
-    cambiarTextoBotonAdivinar(texto) {
-    this.btnAdivinar.innerHTML = texto;
+	
+	mostrarPanelPostPartida(titulo, concepto, ejemplo, textoBoton) {
+        // Oculta el teclado virtual
+        this.tecladoVirtual.classList.add("oculto");
+        
+        // Inyecta el concepto
+		this.tituloRnd.innerHTML = titulo;
+        this.textoConcepto.innerHTML = concepto;
+        this.textoEjemplo.innerHTML = `"${ejemplo}"`;
+
+        // Genera el botón con teclas
+        this.contenedorBotonFinal.innerHTML = ""; 
+        const letras = textoBoton.split(""); 
+        letras.forEach(letra => {
+            const btnTecla = document.createElement("button");
+            btnTecla.classList.add("tecla"); // Usa tu diseño original
+            btnTecla.innerText = letra;
+            this.contenedorBotonFinal.appendChild(btnTecla);
+        });
+
+        // Muestra el panel
+        this.panelDefinicion.classList.remove("oculto");
     }
     
     mostrarResultado(titulo, mensaje, textoBoton) {
@@ -681,37 +526,30 @@ class Interfaz {
         this.modalMensaje.innerHTML = `${mensaje}`;
         this.modalOverlay.classList.remove("oculto");       
         // 2. Modificar la interfaz del juego (cuando se gana o se pierde)
-        this.btnReiniciar.innerText = textoBoton; // Asigna el textoBoton ("Revivir" o "¿Quién dijo miedo?")
-        this.btnReiniciar.classList.remove("oculto"); // quita la clase "oculto" al botón Reiniciar
-        this.inputLetra.disabled = true; // bloquea el inputLetra
-        this.btnAdivinar.classList.add("oculto"); // oculta el botón Adivinar
-        this.btnReiniciar.classList.add("modo-revivir");
+        this.modalBoton.innerText = textoBoton; // Asigna el textoBoton ("Revivir" o "¿Quién dijo miedo?")
+        //this.btnReiniciar.classList.remove("oculto"); // quita la clase "oculto" al botón Reiniciar
+        //this.btnReiniciar.classList.add("modo-revivir");
     }
     
     reiniciarInterfaz() {
         // Revertimos el punto 2 de mostrarResultado
-        this.btnReiniciar.classList.add("oculto"); 
-        this.inputLetra.disabled = false; 
-        this.inputLetra.value = "";
-        // this.contadorTurnos.textContent = "Turnos: " + this.turnos;
-        this.btnAdivinar.classList.remove("oculto");
+        //this.btnReiniciar.classList.add("oculto");         
+        // this.contadorTurnos.textContent = "Turnos: " + this.turnos;        
         this.mensajeCondena.classList.add("oculto");
         this.mensajeCondena.classList.remove("animar-condena");
         this.mensajeCondena.classList.remove("animar-victoria");
         this.pantallaJuego.classList.add("estado-jugando");
-        this.btnReiniciar.classList.remove("modo-revivir");
-        this.lineasPalabra.classList.remove("estado-muerto");
-        this.inputLetra.parentElement.classList.remove("estado-muerto");
-        this.letrasUsadasTexto.classList.remove("estado-muerto");
+        //this.btnReiniciar.classList.remove("modo-revivir");
+        this.lineasPalabra.classList.remove("estado-muerto");              
         this.tituloJuego.classList.remove("efecto-latido"); 
         this.tituloJuego.classList.remove("efecto-salvado");
         this.tituloJuego.classList.remove("efecto-fuego-interno");
-        this.dibujoAhorcado.classList.remove("dibujo-victoria-cian");
-        this.inputLetra.parentElement.classList.remove("estado-victoria");
-        this.letrasUsadasTexto.classList.remove("estado-victoria");
-        this.btnAdivinar.classList.remove("peligro-inminente");
-        this.btnReiniciar.classList.remove("estado-victoria");
+        this.dibujoAhorcado.classList.remove("dibujo-victoria-cian");        
+        //this.btnReiniciar.classList.remove("estado-victoria");
         this.tituloJuego.classList.remove("estado-victoria");
+		this.tecladoVirtual.classList.remove("oculto"); // Devolvemos el teclado
+        this.panelDefinicion.classList.add("oculto");   // Ocultamos el panel
+		this.pantallaJuego.classList.remove("estado-victoria", "estado-derrota");
         
     }
     
@@ -735,18 +573,79 @@ class Interfaz {
                 }
             }
         });
-    }
-    
-    mostrarPurgatorio(letra) {
-        this.letrasUsadasTexto.innerHTML = letra;
-    }
-    
+    }   
+      
     mostrarConfirmacion() {
         this.modalConfirmOverlay.classList.remove("oculto");
     }
     
     ocultarConfirmacion() {
         this.modalConfirmOverlay.classList.add("oculto");
+    }
+
+    ejecutarEfectosDerrota(palabraSecreta, arrayOculto, fraseCondena) {
+        this.iniciarEfectoTitulo();
+        
+        // 1. Invocamos a los fantasmas para las letras no adivinadas
+        const spansLetras = this.lineasPalabra.querySelectorAll("span");
+        for (let i = 0; i < palabraSecreta.length; i++) {    
+            if (arrayOculto[i] === "_") {
+                spansLetras[i].textContent = palabraSecreta[i];
+                spansLetras[i].classList.add("letra-fantasma");
+            }
+        }        
+        // 2. Apagamos contenedores y mostramos la condena
+        this.lineasPalabra.classList.add("estado-muerto");
+        this.mensajeCondena.innerHTML = fraseCondena;
+        this.mensajeCondena.classList.remove("oculto");
+        this.mensajeCondena.classList.add("animar-condena");
+		this.pantallaJuego.classList.add("estado-derrota");
+    }
+
+    ejecutarEfectosVictoria(fraseSalvacion) {
+        this.iniciarEfectoTitulo2();
+        this.iniciarEfectoTitulo3();
+		this.motorVisual.dispararVictoria();
+        this.dibujoAhorcado.classList.add("dibujo-victoria-cian");        
+        // 1. Pintamos de victoria todas las letras
+        // Solo afectamos a los spans que están jugando
+        const spansLetras = this.lineasPalabra.children;
+        for (let i = 0; i < spansLetras.length; i++) {
+            if (!spansLetras[i].classList.contains("oculto")) {
+                spansLetras[i].classList.add("letra-ganadora");
+            }
+        }        
+        // 2. Mostramos el mensaje de salvación y preparamos el botón de continuar
+        this.mensajeCondena.innerHTML = fraseSalvacion;
+        this.mensajeCondena.classList.remove("oculto");
+        this.mensajeCondena.classList.add("animar-victoria");       
+        //this.btnReiniciar.classList.add("estado-victoria");
+		this.pantallaJuego.classList.add("estado-victoria");
+    }
+    
+    alertaPeligroInminente() {
+        this.tiempoRestante.classList.add("peligro-inminente"); 
+    }
+
+    ejecutarMuerteVisualReloj(dibujoAhorcadoFinal) {
+        // La UI manipula sus propios colores y textos
+        this.tiempoRestante.classList.remove("latido-corazon");
+        this.tiempoRestante.style.color = "red";
+        this.dibujoAhorcado.innerText = dibujoAhorcadoFinal;
+    }
+    
+    prepararRelojVisual(tiempoActual) {
+        // La UI decide cómo limpiar el reloj y los textos de condena
+        this.tiempoRestante.classList.remove("latido-corazon");
+        this.tiempoRestante.style.color = "#dfdede";
+        
+        if (tiempoActual === 0) {
+            this.tiempoRestante.innerText = "∞";
+        } else {
+            this.tiempoRestante.innerText = tiempoActual;
+        }
+        
+        this.mensajeCondena.classList.add("oculto");
     }
 }
 
@@ -756,31 +655,115 @@ class Juego {
         this.audio = herramientaAudio;
         this.ui = herramientaUI;
         this.config = herramientaConfig;
-        
+        // El juego siempre nace en la modal de bienvenida
+        this.estadoActual = ESTADO_JUEGO.BIENVENIDA;
         // Llamamos al súper método para que construya las variables por primera vez
         this.reiniciarEstado();
+    }
+    
+    establecerModoJuego(nuevoModo) {
+        this.modoJuego = nuevoModo;
+    }
+    
+    cambiarEstado(nuevoEstado) {
+        // 1. Actualizamos el cerebro
+        this.estadoActual = nuevoEstado; // El estado actual es el que llegue por el parámetro (nuevo estado)
+        
+        // 2. Ejecutamos las acciones estrictas según el nuevo estado
+        switch (this.estadoActual) { // según estado actual:
+            case ESTADO_JUEGO.BIENVENIDA:                
+                break;
+                
+            case ESTADO_JUEGO.MENU: // Mostramos el menú
+                this.audio.iniciarMusica();
+                this.ui.ocultarJuego();
+                this.ui.ocultarConfiguracion();
+                this.ui.pantallaMenu.classList.remove("oculto");
+                break;
+                
+            case ESTADO_JUEGO.CONFIGURACION:
+                this.ui.mostrarConfiguracion();
+                break;
+                
+            case ESTADO_JUEGO.INGRESO_PALABRA:
+                this.ui.mostrarIngresoPalabra();
+                break;
+                
+            case ESTADO_JUEGO.JUGANDO:
+                // Si venimos de una pausa, reanudamos. Si es nuevo, la lógica de inicio ya se encarga.
+                if (this.turnos > 0 && this.arrayOculto.includes("_") && this.tiempoActual > 0) {
+                    this.iniciarCronometro();
+                }
+                break;
+                
+            case ESTADO_JUEGO.PAUSA_MODAL:
+                // Congela el tiempo cuando se abre una modal
+                clearInterval(this.cronometro);
+                this.ui.mostrarConfirmacion();
+                break;
+                
+            case ESTADO_JUEGO.VICTORIA:
+                // 1. Detenemos los sistemas de juego
+                clearInterval(this.cronometro);
+                this.audio.detener("latido");
+                this.audio.detenerMusica();
+                this.audio.reproducir("victoria2");
+                // 2. Ejecutamos los efectos visuales
+                const idiomaVic = this.config.estado.idioma;
+                const dictVic = DiccionarioIdioma[idiomaVic];
+                this.ui.cambiarTitulo(dictVic.tituloSalvado);
+                this.ui.dibujarAhorcado(BaseDeDatos.dibujoVictoria[0]);
+                this.ui.ejecutarEfectosVictoria(dictVic.fraseSentenciaVictoria);
+                this.ui.pantallaJuego.classList.remove("estado-jugando");
+				// Elegimos un título al azar del diccionario
+                const indiceAleatorioVic = Math.floor(Math.random() * dictVic.titulosVictoriaDinamicos.length);
+                const tituloElegidoVic = dictVic.titulosVictoriaDinamicos[indiceAleatorioVic];          
+                // 3. Disparamos la modal                
+                this.ui.mostrarResultado(dictVic.modalVictoriaTitulo, dictVic.modalVictoriaMensaje, "Ver Detalles");
+				this.tituloPostPartida = tituloElegidoVic;
+				this.textoBotonPostPartida = dictVic.teclaDesafiar || "DESAFIAR";
+				this.sonidoPostPartida = "victoria1";
+                // Aquí añadiremos la lógica de sumar monedas/puntos
+                break;
+                
+            case ESTADO_JUEGO.DERROTA:
+                // 1. Detenemos los sistemas
+                clearInterval(this.cronometro);
+                this.audio.detener("latido");
+                this.audio.detenerMusica();
+                // 2. Ejecutamos los efectos visuales
+                const idiomaDer = this.config.estado.idioma;
+                const dictDer = DiccionarioIdioma[idiomaDer];
+                this.ui.cambiarTitulo(dictDer.tituloDerrota);
+                this.ui.ejecutarEfectosDerrota(this.palabraSecreta, this.arrayOculto, dictDer.fraseSentenciaDerrota);
+                this.ui.pantallaJuego.classList.remove("estado-jugando");     
+				const indiceAleatorioDer = Math.floor(Math.random() * dictDer.titulosDerrotaDinamicos.length);
+                const tituloElegidoDer = dictDer.titulosDerrotaDinamicos[indiceAleatorioDer]; 
+				this.tituloPostPartida = tituloElegidoDer;
+				this.textoBotonPostPartida = dictDer.teclaRevivir || "REVIVIR";
+				this.sonidoPostPartida = "derrota";
+                // 3. Evaluamos si murió por tiempo o por turnos para el título de la modal
+                let tituloModalDerrota = (this.tiempoActual <= 0 && this.config.estado.tiempo !== 0)? `<span class="texto-terror">${dictDer.modalDerrotaTiempoTitulo}</span>` 
+                    : dictDer.modalDerrotaTitulo; // Si el tiempo llega a 0 y el cronómetro está activado entonces (?) guarda el titulo de derrota por tiempo, sino (:), guarda el titulo de derrota por turnos                    
+                this.ui.mostrarResultado(tituloModalDerrota, dictDer.modalDerrotaMensaje, "Ver Detalles" ); // Cambia la pantalla del juego de acuerdo al tipo de derrota
+                break;
+        }
     }
     
     reiniciarEstado() {
         // Estado inicial del Juego
         clearInterval(this.cronometro); // Destruye cualquier reloj fantasma
-        this.audio.latido.pause();      // Apaga cualquier latido fantasma
+        this.audio.detener("latido");      // Apaga cualquier latido fantasma
         this.turnos = this.config.estado.turnos;
         this.tiempoActual = this.config.estado.tiempo * 60; // Multiplicamos los minutos (1, 2, 3) por 60 para tener los segundos
-        if (this.tiempoActual === 0) { // Si eligió 0 (Ninguno), mostraremos un símbolo de infinito
-            this.ui.tiempoRestante.innerText = "∞";
-        } else {
-            this.ui.tiempoRestante.innerText = this.tiempoActual;
-        }
+        this.ui.prepararRelojVisual(this.tiempoActual);
         this.palabraSecreta = "";
         this.arrayOculto = [];
         this.letrasUsadas = [];
-        this.ui.mensajeCondena.classList.add("oculto");   
-        this.ui.tiempoRestante.classList.remove("latido-corazon"); // Limpiamos el efecto rojo
-        this.ui.tiempoRestante.style.color = "#dfdede";
     }
     
     iniciarCronometro() {
+        clearInterval(this.cronometro);
         // 1. Guardia: Si el tiempo es infinito (0), abortamos y no encendemos el reloj
         if (this.tiempoActual === 0) return;
         // 2. Encendemos el reloj que hará un "tic" cada 1 segundo (1000 milisegundos)
@@ -791,52 +774,32 @@ class Juego {
             if (this.tiempoActual <= 10 && this.tiempoActual > 0) {
                 this.ui.tiempoRestante.classList.add("latido-corazon"); // Pone la letra roja y temblorosa
                 // Reproducimos el latido solo si los SFX están permitidos, una sola vez, en el segundo 10
-                if (this.tiempoActual === 10 && this.audio.sfxActivos) {
-                    this.audio.latido.currentTime = 0; 
-                    this.audio.latido.play();
+                if (this.tiempoActual === 10 && this.audio.sfxActivos) {                     
+                    this.audio.reproducir("latido");
                 }
             }
             // 4. FASE DE MUERTE: El tiempo llega a 0
-            if (this.tiempoActual === 0) {
+            if (this.tiempoActual <= 0) {
                 clearInterval(this.cronometro); // Apagamos el reloj
-                this.audio.latido.pause(); // Callamos el latido 
+                this.audio.detener("latido"); // Callamos el latido 
                 //this.audio.detenerMusica(); // Detenemos la música
                 this.ejecutarDerrotaPorTiempo(); // Llamamos al verdugo                                              
             }
         }, 1000);
     }
     
-    ejecutarDerrotaPorTiempo() {
-        // 1. Limpiamos el efecto de pánico del reloj        
-        this.ui.tiempoRestante.classList.remove("latido-corazon");
-        this.ui.tiempoRestante.style.color = "red";
-        // 2. Forzamos la muerte para la Máquina de Estados
+    ejecutarDerrotaPorTiempo() {          
         this.turnos = 0;        
-        this.ui.dibujoAhorcado.innerText = BaseDeDatos.dibujosASCII[10]; // Dibujo del ahorcado completo
-        this.ui.pantallaJuego.classList.remove("estado-jugando"); // Eliminamos el estado Jugando para que se activen los efectos de la derrota
-         
-        // 3. Sonido de derrota
-        if (this.audio.sfxActivos) {
-            this.audio.muahaha.play();             
-        }        
-        // --- INYECCIÓN DE IDIOMA Y EFECTOS ---
-        const idioma = this.config.estado.idioma;        
-        this.ui.cambiarTitulo(DiccionarioIdioma[idioma].tituloDerrota); // Título de Derrota con su Efecto        
-        let elementoCondena = this.ui.mensajeCondena; // Frase "ESTÁS CONDENADO"
-        elementoCondena.innerHTML = DiccionarioIdioma[idioma].fraseSentenciaDerrota; // Le ponemos la frase de MUERTE
-        elementoCondena.classList.remove("oculto");
-        // 4. Mostramos el Modal de castigo
-        this.ui.mostrarResultado(
-            `<span class="texto-terror">${DiccionarioIdioma[idioma].modalDerrotaTiempoTitulo}</span>`, 
-            DiccionarioIdioma[idioma].modalDerrotaMensaje, 
-            DiccionarioIdioma[idioma].btnRevivir
-        );
+        let dibujoAhorcadoFinal = BaseDeDatos.dibujosASCII[10]; // Mandamos a dibujar el ahorcado completo
+        this.ui.ejecutarMuerteVisualReloj(dibujoAhorcadoFinal);
+        this.cambiarEstado(ESTADO_JUEGO.DERROTA);
     }
     
     iniciarPartida(palabraManual = null) {
         // 1. Estado inicial del Juego
         this.reiniciarEstado();
         this.ui.pantallaJuego.classList.add("estado-jugando");
+		this.ui.motorVisual.reset();
         
         // 2. Selección de Palabra Secreta (El Bibliotecario)
         const idiomaActivo = this.config.estado.idioma;        
@@ -861,91 +824,44 @@ class Juego {
         this.letrasSecretas = this.palabraSecreta.split("");
         this.arrayOculto = Array(this.palabraSecreta.length).fill("_"); // la palabraSecreta se convierte en guiones bajos (arrayOculto)        
         this.ui.dibujarPalabra(this.arrayOculto); // Mandamos los guines bajos a la interfaz
-        let sueloInicial = BaseDeDatos.dibujosASCII[0];
-        this.ui.dibujarAhorcado(sueloInicial);
+        this.ui.actualizarPantallaDibujo(this.turnos, 10); // Reemplazamos las líneas de sueloInicial y dibujarAhorcado por el enrutador único.
         
         // 3. Reinicio de estados iniciales 
-        this.ui.mostrarPurgatorio(DiccionarioIdioma[this.config.estado.idioma].letrasPurgatorio);
-        this.ui.cambiarTitulo(DiccionarioIdioma[this.config.estado.idioma].tituloJuego);
-        this.ui.cambiarTextoBotonAdivinar(DiccionarioIdioma[this.config.estado.idioma].btnAccionAdivinar);
-        this.iniciarCronometro();
+        this.ui.cambiarTitulo(DiccionarioIdioma[this.config.estado.idioma].tituloJuego);        
+        this.ui.generarTeclado(idiomaActivo, (letra) => {
+            this.audio.reproducir("adivinar"); // El Juego hace sonar el clic
+            this.procesarLetra(letra);  // El Juego procesa si ganas o pierdes
+        });
+        this.cambiarEstado(ESTADO_JUEGO.JUGANDO);
     }
     
     procesarLetra(letra) {
-        if (this.letrasUsadas.includes(letra)) {
-            alert(DiccionarioIdioma[this.config.estado.idioma].alertaLetraRepetida);
-            return;
-        }
-        this.letrasUsadas.push(letra); // Esto guarda la letra usada para poder recordarla y usarla en el purgatorio de letras
-        
-        let letraPurgatorio = DiccionarioIdioma[this.config.estado.idioma].letrasPurgatorio + this.letrasUsadas.map(letra => {
-            if (this.palabraSecreta.includes(letra)) {
-                return `<span class="letra-acertada">${letra}</span>`;
-            } else {
-                return `<span class="letra-erronea">${letra}</span>`;
-            }
-        }).join(" - ");
-        this.ui.mostrarPurgatorio(letraPurgatorio);
+        this.letrasUsadas.push(letra); 
         
         if (this.palabraSecreta.includes(letra)) { // Si letra escrita se encuentra dentro de la palabraSecreta
             for (let i = 0; i < this.palabraSecreta.length; i++) { // Entonces busca esxactamente donde, pasando desde el inicio hasta el final de la palabra secreta
                 if (this.palabraSecreta[i] === letra) { // Si la letra secreta coincide con la letra escrita
                     this.arrayOculto[i] = letra; // entonces el guión bajo (arrayOculto) que coincide con esa letra se convierte ahora en la letra escrita
+                    this.ui.revelarLetra(i, letra); // re-dibujamos la letra específica en su posición exacta
                 }
-            }
-            this.ui.dibujarPalabra(this.arrayOculto); // Mandamos hacer el cambio en la interfaz
+            }                       
         } else {
-            this.turnos--; // Restamos 1 turno
-            let fasesAhorcado = BaseDeDatos.dibujosASCII[10 - this.turnos]; // Restamos el número de turnos menos el número de errores y lo conectamos con la fase del dibujo que le corresponde, y lo guardamos en una variable
-            this.ui.dibujarAhorcado(fasesAhorcado);  // Esta variable lo mandamos al método correspondiente en la interfaz
-            
+            this.turnos--; // Restamos 1 turno   
+			// Envía los turnos y el tipo de aspecto seleccionado (ej: "ascii" o "maldito")
+			this.ui.actualizarPantallaDibujo(this.turnos, 10, this.config.estado.skin);
+                        
             if (this.turnos === 1) {
-                this.ui.cambiarTextoBotonAdivinar(DiccionarioIdioma[this.config.estado.idioma].btnSellarDestino);
-                // Activa el estado de pánico visual en el botón
-                ui.btnAdivinar.classList.add("peligro-inminente");
+                this.ui.alertaPeligroInminente(); // Mandamos a cambiar el color del contador
             }
             
             if (this.turnos === 0) {
-                clearInterval(this.cronometro);
-                this.audio.latido.pause();
-                this.audio.detenerMusica();                
-                const idioma = this.config.estado.idioma; // Guardamos el idioma en una variable corta para no escribir tanto        
-                this.ui.cambiarTitulo(DiccionarioIdioma[idioma].tituloDerrota);
-                this.ui.mostrarResultado(
-                    DiccionarioIdioma[idioma].modalDerrotaTitulo, 
-                    DiccionarioIdioma[idioma].modalDerrotaMensaje, 
-                    DiccionarioIdioma[idioma].btnRevivir
-                );
-                this.ui.pantallaJuego.classList.remove("estado-jugando");                
+                this.cambiarEstado(ESTADO_JUEGO.DERROTA);
+                return;                
             }
         }
         
         if (!this.arrayOculto.includes("_")) { // Si te quedas sin guines bajos (literal, si arrayOculto no incluye "_")
-            const idioma = this.config.estado.idioma;
-            const dict = DiccionarioIdioma[idioma];
-            // Armamos el mensaje combinando HTML con los datos de nuestro Objeto
-            const mensajeVictoria = `
-                <p>${dict.modalVictoriaMensaje}</p>
-                <br>
-                <div class="caja-concepto">
-                    <p class="texto-terror"><strong>${dict.etiquetaPalabra}</strong> ${this.palabraActualObjeto.palabra}</p>
-                    <p><strong>${dict.etiquetaVeredicto}</strong> ${this.palabraActualObjeto.concepto}</p>
-                    <p class="frase-tematica">"${this.palabraActualObjeto.ejemplo}"</p>
-                </div>
-            `;
-            // Lanzamos el modal con la información estructurada
-            this.ui.mostrarResultado(
-                dict.modalVictoriaTitulo,
-                mensajeVictoria,
-                dict.btnSiguientePrueba
-            );            
-            clearInterval(this.cronometro);
-            this.audio.latido.pause();
-            this.ui.cambiarTitulo(DiccionarioIdioma[idioma].tituloSalvado);
-            this.ui.dibujarAhorcado(BaseDeDatos.dibujoVictoria[0]);
-            document.getElementById("mensajeCondena").innerHTML = dict.fraseSentenciaVictoria;            
-            this.ui.pantallaJuego.classList.remove("estado-jugando");
-            return;
+           this.cambiarEstado(ESTADO_JUEGO.VICTORIA);
         }
     }     
 }
@@ -957,102 +873,44 @@ const partida = new Juego(audio, ui, config);
 ui.traducirPantalla(config.estado.idioma);
 ui.modalBoton.addEventListener("click", () => {
     // 1. Siempre cerramos la modal
-    ui.ocultarModal();    
-    // 2. Evaluamos el ESTADO del juego para saber qué sonido reproducir
-    if (partida.turnos === 0) {    
-        audio.botonClick();
-        ui.iniciarEfectoTitulo();
-        // 1. Capturamos los <span> que YA están en la pantalla
-        const spansLetras = ui.lineasPalabra.querySelectorAll("span");
-        // 2. Recorremos la palabra secreta original, letra por letra
-        for (let i = 0; i < partida.palabraSecreta.length; i++) {    
-        // Comparamos con lo que el jugador logró adivinar en el arrayOculto
-        if (partida.arrayOculto[i] === "_") {
-            // Si el jugador tenía un guion aquí, NO la adivinó. Invocamos al fantasma
-            // Le cambiamos el texto a ESE span específico
-            spansLetras[i].textContent = partida.palabraSecreta[i];
-            // ...y le ponemos su clase de fantasma
-            spansLetras[i].classList.add("letra-fantasma");
-        }
-    }
-        // 3. Apagamos el contenedor general (como siempre)
-        ui.lineasPalabra.classList.add("estado-muerto");
-        audio.sonidoDerrota();
-        ui.mensajeCondena.classList.remove("oculto");
-        ui.mensajeCondena.classList.add("animar-condena");
-        ui.lineasPalabra.classList.add("estado-muerto");
-        ui.inputLetra.parentElement.classList.add("estado-muerto");
-        ui.letrasUsadasTexto.classList.add("estado-muerto");
-    } else if (partida.arrayOculto?.length > 0 && !partida.arrayOculto.includes("_")) {        
-        audio.botonClick();
-        ui.iniciarEfectoTitulo2();
-        ui.iniciarEfectoTitulo3();
-        audio.sonidoVictoria();
-        ui.dibujoAhorcado.classList.add("dibujo-victoria-cian");        
-        // 1. Aplicamos el efecto a las letras
-        const spansLetras = ui.lineasPalabra.querySelectorAll("span");
-        spansLetras.forEach(span => {
-        span.classList.add("letra-ganadora");
-        });
-        // 2. Cambiamos la frase de condena por la de victoria        
-        ui.mensajeCondena.classList.remove("oculto");
-        ui.mensajeCondena.classList.add("animar-victoria"); // Una animación verde o blanca        
-        // 3. Matamos el resto de elementos (purgatorio, input) pero en un tono distinto        
-        ui.inputLetra.parentElement.classList.add("estado-victoria");
-        ui.letrasUsadasTexto.classList.add("estado-victoria");
-        ui.btnReiniciar.classList.add("estado-victoria");
-    } else {
-        audio.botonClick();    
-        audio.iniciarMusica();
-    }    
-});
+    ui.ocultarModal();     
+    audio.reproducir("click"); 	
+    // Evaluamos en qué estado nos quedamos para reproducir el efecto de "cierre"
+    if (partida.estadoActual === ESTADO_JUEGO.BIENVENIDA) {
+        partida.cambiarEstado(ESTADO_JUEGO.MENU);
+    } else if (
+		partida.estadoActual === ESTADO_JUEGO.VICTORIA ||
+		partida.estadoActual === ESTADO_JUEGO.DERROTA
+        ) {
+            audio.reproducir(partida.sonidoPostPartida);
+
+    ui.mostrarPanelPostPartida(
+        partida.tituloPostPartida,
+        partida.palabraActualObjeto.concepto,
+        partida.palabraActualObjeto.ejemplo,
+        partida.textoBotonPostPartida
+		 );
+     }	
+});       
 ui.btnConfig.addEventListener("click", () => {
-    audio.botonClick(); 
-    ui.mostrarConfiguracion();
+    audio.reproducir("click"); 
+    partida.cambiarEstado(ESTADO_JUEGO.CONFIGURACION);
 });
 ui.btnCerrarConfig.addEventListener("click", () => {
-    audio.botonClick();
-    ui.ocultarConfiguracion();
+    audio.reproducir("click");
+	ui.configurarSkinVisual(config.skin);
+    partida.cambiarEstado(ESTADO_JUEGO.MENU);
 });
 ui.btnSistema.addEventListener("click", () => {
-    partida.modoJuego = "sistema";
-    audio.botonDestino();
+    partida.establecerModoJuego("sistema");
+    audio.reproducir("destino");
     audio.iniciarJuego();
     ui.mostrarJuego();
     ui.reiniciarInterfaz();
     partida.iniciarPartida();
 });
-ui.btnAdivinar.addEventListener("click", () => {    
-    let letraEscrita = ui.inputLetra.value.toUpperCase(); // Toma el valor (letra) escrita en inputLetra, conviertela en mayusculas con toUpperCase y guardalo en la variable letraEscrita
-    
-    if (letraEscrita === "") {
-        alert(DiccionarioIdioma[config.estado.idioma].alertaLetraVacia);
-        return; 
-    }
-    audio.botonAdivinar();
-    partida.procesarLetra(letraEscrita); // Envía la variable nueva al objeto partida y procesalo en su función procesarLetra
-    
-    if (partida.turnos === 0) {
-        audio.detenerMusica();
-    } else if (partida.arrayOculto && !partida.arrayOculto.includes("_")) {
-        audio.detenerMusica();
-        audio.sonidoVictoria2();
-    } 
-    ui.inputLetra.value = ""; // Limpia el inputLetra
-});
-ui.btnReiniciar.addEventListener("click", () => {
-    audio.botonDestino();
-    audio.iniciarJuego();
-    ui.reiniciarInterfaz();
-    
-    if (partida.modoJuego === "amigo") {
-        ui.mostrarIngresoPalabra();
-    } else {
-        partida.iniciarPartida();  
-    }        
-});
 ui.btnSalirMenu.addEventListener("click", () => { 
-    audio.reproducirRisa();
+    audio.reproducir("risa");
     const idioma = config.estado.idioma; // Averiguamos el idioma actual
     ui.mostrarResultado(
         DiccionarioIdioma[idioma].modalSalirMenuTitulo, 
@@ -1060,36 +918,32 @@ ui.btnSalirMenu.addEventListener("click", () => {
         DiccionarioIdioma[idioma].btnBienvenida 
     );
 });
-ui.btnSalir.addEventListener("click", () => {    
-    ui.mostrarConfirmacion();
-    clearInterval(partida.cronometro);    
+ui.btnSalir.addEventListener("click", () => {     
+    partida.cambiarEstado(ESTADO_JUEGO.PAUSA_MODAL);    
 });
 ui.btnConfirmNo.addEventListener("click", () => {
-    audio.botonClick();
+    audio.reproducir("click");
     ui.ocultarConfirmacion();
-    // 2. Reanudamos el reloj SOLO si el juego sigue activo 
-    // (turnos mayores a 0 y aún hay guiones por adivinar)
-    if (partida.turnos > 0 && partida.arrayOculto.includes("_")) {
-        partida.iniciarCronometro();
-    }
+    partida.cambiarEstado(ESTADO_JUEGO.JUGANDO);    
 });
 ui.btnConfirmSi.addEventListener("click", () => {
     audio.detenerMusica();
-    audio.botonClick();    
+    audio.reproducir("click");    
     ui.ocultarConfirmacion(); // Cerramos la ventana
     ui.ocultarJuego(); // Volvemos al menú    
-    audio.reproducirBurla();    
+    audio.reproducir("burla");    
     audio.iniciarMusica();
     partida.reiniciarEstado();
     ui.reiniciarInterfaz();
+    partida.cambiarEstado(ESTADO_JUEGO.MENU);
 });
 ui.btnAmigo.addEventListener("click", () => {
-    partida.modoJuego = "amigo";
-    audio.botonDestino();
-    ui.mostrarIngresoPalabra();
+    partida.establecerModoJuego("amigo");
+    audio.reproducir("destino");
+    partida.cambiarEstado(ESTADO_JUEGO.INGRESO_PALABRA);
 });
 ui.btnEmpezar.addEventListener("click", () => {
-    audio.botonAdivinar();
+    audio.reproducir("adivinar");
     audio.iniciarJuego();
     // 1. Extraemos el valor escrito y lo convertimos a mayúsculas
     let palabraCapturada = ui.inputPalabra.value.toUpperCase(); 
@@ -1113,3 +967,15 @@ ui.mostrarResultado(
     dictBienvenida.btnBienvenida
 );
 ui.dibujoMenu.innerText = BaseDeDatos.dibujoMenu;
+ui.contenedorBotonFinal.addEventListener("click", () => {
+    // 1. Sonido de botón normal y reinicio de sistemas
+    audio.reproducir("destino");
+    audio.iniciarJuego();
+    ui.reiniciarInterfaz();          
+    // 3. Volvemos a lanzar la partida
+    if (partida.modoJuego === "amigo") {
+        ui.mostrarIngresoPalabra(); // Si es con amigo, pide la palabra
+    } else {
+        partida.iniciarPartida();   // Si es sistema, saca una palabra nueva sola
+    }        
+});

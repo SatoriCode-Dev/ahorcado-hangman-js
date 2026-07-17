@@ -1,0 +1,78 @@
+/* ================================================================
+   1. VARIABLES GLOBALES Y FUENTES
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+@font-face {
+    font-family: 'FuenteTerror';
+    src: url('Tipografía/ITC Serif Gothic Std Heavy.otf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir';
+    src: url('Tipografía/CinzelDecorative-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MaquinaEscribir2';
+    src: url('Tipografía/ShareTechMono-Regular.ttf') format('truetype');
+}
+
+:root {
+    /* === PALETA DE COLORES === */
+    --color-rojo-puro: #ff0000;
+    --color-rojo-claro: #ff3333;
+    --color-rojo-oscuro: #8b0000;
+    --color-rojo-sombra: #7e2121;
+    --color-rojo-intenso: #cc0000;
+    --color-rojo-muy-oscuro: #4a0000;
+    --color-rojo-sangre: #2b0000;
+    --color-rojo-fondo: #1a0000;
+    --color-rojo-fondo-2: #2a0000;
+
+    /* === GRISES === */
+    --color-gris-claro: #dfdede;
+    --color-gris-medio: #cccccc;
+    --color-gris-fantasma: #666666;
+    --color-gris-apagado: #555555;
+    --color-gris-oscuro: #4a4a4a;
+    --color-gris-oscuro-2: #333333;
+    --color-gris-oscuro-3: #222222;
+    --color-gris-ceniza: #2b2b2b;
+    --color-gris-cadaver: #888888;
+
+    /* === COLORES DE VICTORIA === */
+    --color-cian-victoria: rgba(0, 180, 200, 0.8);
+    --color-cian-oscuro: rgba(0, 100, 120, 0.4);
+    --color-cian-medio: rgba(0, 130, 150, 0.6);
+    --color-blanco: #ffffff;
+    --color-negro: #0a0a0a;
+    --color-negro-2: #050000;
+    --color-nucleo-espectral: #e0f7fa;
+
+    /* === SOMBRAS REUTILIZABLES === */
+    --sombra-roja: 0 0 8px var(--color-rojo-puro);
+    --sombra-roja-texto: 2px 2px 4px var(--color-rojo-sombra);
+    --sombra-cian-texto: 0 0 10px var(--color-cian-victoria),
+                         0 0 20px var(--color-cian-victoria),
+                         0 0 30px var(--color-cian-oscuro);
+
+    /* === FUENTES === */
+    --fuente-principal: 'FuenteTerror', sans-serif;
+    --fuente-maquina: 'MaquinaEscribir', sans-serif;
+    --fuente-maquina-2: 'MaquinaEscribir2', monospace;
+    --fuente-crimson: 'Crimson Text', serif;
+    --fuente-mono: 'Share Tech Mono', 'Courier New', monospace;
+    
+    /* --- VARIABLES MARCO GÓTICO --- */
+    --marco-fondo: #050505;            /* El vacío central oscuro (Negative Space) */
+    --marco-trazo-exterior: #1a0505;   /* Borde grueso exterior imitando hierro */
+    --marco-trazo-interior: #8a0303;   /* Delineado rojo fino brillante */
+    --marco-esquinas: #8a0303;         /* Color de las puntas forjadas en los extremos */
+}
+
+/* Clase auxiliar para aplicar la fuente máquina */
+.fuente-principal {
+    font-family: var(--fuente-maquina);
+}

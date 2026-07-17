@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
 @font-face {
   font-family: 'FuenteTerror';
   src: url('Tipografía/ITC Serif Gothic Std Heavy.otf') format('truetype'); 
@@ -282,6 +284,102 @@ button {
   font-family: 'FuenteTerror', sans-serif;
 }
 
+/* 1. EL CONTENEDOR PRINCIPAL */
+.teclado-contenedor {
+    display: flex;
+    flex-direction: column; /* Obliga a que las filas se apilen una sobre otra */
+    align-items: center;
+    width: 100%;
+    max-width: 500px; /* Límite para que no se vea gigante en monitores de PC */
+    margin: 10px auto;
+    padding: 0 4px; /* Un pequeño margen para que no toque los bordes del celular */
+    box-sizing: border-box;
+}
+
+/* 2. CADA FILA (Q - A - Z) */
+.fila-teclado {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+/* 3. LA TECLA (Magia Responsiva + Estética) */
+.tecla {
+    flex: 1; /* ¡CLAVE! Permite que la tecla se encoja o estire para encajar en la pantalla */
+    max-width: 42px; /* Límite máximo de ancho */
+    height: 48px; /* Altura ideal para que el pulgar no se equivoque de letra */
+    margin: 0 2px; /* Reducimos el espacio entre teclas para que quepan las 10 */
+    padding: 0;
+    
+    /* Fuente dinámica: Se encoge en celulares y crece en PC */
+    font-size: clamp(0.9rem, 4vw, 1.2rem); 
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* COLORES Y RELIEVES (Tu propuesta base) */
+    background-color: #4a0000; 
+    color: #ffcccc; 
+    border: 2px solid #800000; 
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5); 
+}
+
+/* Efecto al pasar el dedo/mouse */
+.tecla:hover:not(:disabled) {
+    background-color: #660000;
+    border-color: #ff0000;
+}
+
+/* ESTADO MUERTO: La letra se apaga y pierde relieve al ser presionada */
+.tecla:disabled {
+    background-color: #1a1a1a; 
+    color: #333333; 
+    border-color: #1a1a1a;
+    box-shadow: none; /* Pierde la sombra, creando un "hueco" visual */
+    cursor: not-allowed;
+}
+
+/* Obliga a cada fila del teclado a estar centrada en su propia línea */
+.fila-teclado {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+/* PROPUESTA B: Teclado Ouija (Solo letras) */
+.tecla.ouija  {
+    width: 40px;
+    height: 45px;
+    font-size: 1.5rem; /* Letra un poco más grande al no tener borde */
+    font-weight: bold;
+    background-color: transparent; /* Sin caja de botón visible */
+    color: #8b0000; /* Rojo óxido */
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8); /* Sombra para separar del fondo */
+} 
+
+.tecla.ouija:hover:not(:disabled) {
+    color: #ff0000; /* Brilla al pasar el mouse */
+    text-shadow: 0 0 5px #ff0000;
+}
+
+/* Estado Muerto (Para TODA tecla presionada) */
+.tecla.ouija:disabled {
+    background-color: transparent;
+    color: #2b2b2b; /* Gris ceniza muy oscuro */
+    text-decoration: line-through; /* Tachado literal de la lista */
+    text-shadow: none;
+    cursor: not-allowed;
+}
+
 /* Estilo base para el botón Adivinar DURANTE el juego */
 #btnAdivinar {
     /* 1. Reset de estilos por defecto y cursor */
@@ -375,18 +473,24 @@ button {
   color: #4a0000;
   text-shadow: 0 0 8px #ff0000;
   font-size: 6vw;
+  margin-bottom: 3px;
 }
 
 #lineasPalabra {
   color: #ff3333;
   text-shadow: 0 0 8px #ff0000;
-  font-size: 10vw;
+  font-size: 2.5rem;
   letter-spacing: 0.3vw;
   font-family: 'FuenteTerror', sans-serif;
   margin-bottom: 35px;
+    
+  display: flex; /* Convierte el contenedor en Flex */
+  justify-content: center; /* Centra los guiones horizontalmente */
+  gap: 10px;    
+  text-transform: uppercase;
 }
 
-#lineasPalabra span {
+#lineasPalabra span {    
     transition: all 2.5s ease-in-out; 
 }
 
@@ -596,6 +700,8 @@ input:focus {
   justify-content: center;
   margin-bottom: 20px;
   margin: 20px;
+  margin-top: 0; 
+  
     
     /* Hacemos la fuente un poco más gruesa para que la luz tenga de dónde agarrarse */
     font-weight: bold; 
@@ -993,4 +1099,115 @@ input:focus {
 .caja-concepto p {
     margin: 5px 0;
     font-size: 0.9em;
+}
+
+/* =========================================
+   PANEL DE DEFINICIÓN FINAL (MODO HISTORIA)
+   ========================================= */
+
+/* =========================================
+   PANEL POST-PARTIDA (LIMPIEZA TOTAL)
+   ========================================= */
+
+/* Bloqueamos el contenedor para destruir bordes, fondos o sombras */
+#panel-definicion .caja-concepto-final {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 15px !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    margin-bottom: 15px !important;
+}
+
+/* Formato pequeño y justificado para el concepto */
+#texto-concepto-final {
+    font-family: 'Crimson Text', serif !important; 
+    color: #aaa !important;
+    font-size: 0.85rem !important; 
+    line-height: 1.4 !important; 
+    margin: 5px 0 !important; 
+    text-align: justify !important; 
+    display: block !important;
+}
+
+/* Formato pequeño, rojo y en cursiva para el ejemplo */
+#texto-ejemplo-final {
+    font-family: 'Crimson Text', serif !important;
+    color: #cc0000 !important; 
+    font-style: italic !important; 
+    font-size: 0.9rem !important; 
+    font-weight: 700 !important; 
+    margin-top: 10px !important; 
+    text-align: justify !important; 
+    display: block !important;
+}
+
+
+/* =========================================
+   EL BOTÓN ESTILO TECLADO QWERTY
+   ========================================= */
+
+#panel-definicion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    animation: aparecer-suave 0.5s ease-in;
+}
+
+.caja-concepto-final {
+    background-color: rgba(15, 15, 15, 0.7);
+    border: 1px solid #333;
+    padding: 15px 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.caja-concepto-final p {
+    color: #dfdede;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+/* El botón estilo teclado (usa tu clase .tecla) */
+.boton-teclas-qwerty {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.boton-teclas-qwerty .tecla {
+    pointer-events: none; /* Obliga a que el clic lo reciba el contenedor */
+    margin: 0; 
+    
+    /* === RESTRICCIONES DE TAMAÑO === */
+    flex-grow: 0; /* Prohíbe que las teclas se estiren para llenar el espacio vacío */
+    width: 55px; /* Fuerza un ancho fijo (ajústalo si tus teclas de arriba miden distinto) */
+    height: 35px; /* Fuerza el alto fijo */
+    padding: 5px; /* Quitamos el padding para que la letra no desborde */
+    font-size: 1.3rem; /* Achicamos la fuente en proporción */
+    
+    /* Centrado perfecto de la letra */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boton-teclas-qwerty:active .tecla {
+    transform: translateY(4px) scale(0.95);
+}
+
+@keyframes aparecer-suave {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

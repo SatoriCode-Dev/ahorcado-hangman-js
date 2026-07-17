@@ -1,0 +1,64 @@
+/* ================================================================
+   2. RESET Y ESTILOS BASE (BODY)
+   ================================================================ */
+
+body {
+    background-color: var(--color-negro);
+    color: #e0e0e0;
+    font-family: var(--fuente-principal);
+    font-size: 4.5vw;
+    text-align: center;
+    padding: 20px;
+    padding-top: 45px;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto; /* Esto centra el juego en la pantalla si se abre en PC */
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+/* ================================================================
+   4. TIPOGRAFÍA GLOBAL
+   ================================================================ */
+
+h1 {
+    color: var(--color-rojo-puro);
+    text-shadow: var(--sombra-roja-texto);
+    font-size: 9vw;
+    line-height: 1.3;
+}
+
+h3 {
+    color: var(--color-rojo-puro);
+    text-shadow: var(--sombra-roja-texto);
+    font-size: 5vw;
+    font-family: var(--fuente-principal);
+}
+
+p {
+    font-size: 4.5vw; /* Un poco más pequeño que el body para dar jerarquía */
+    margin-bottom: 15px;
+}
+
+.subtitulo {
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin-top: 1px;
+    opacity: 0.6;
+}
+
+.frase-tematica {
+    font-size: 1rem;
+    color: var(--color-gris-fantasma);
+    margin-top: -10px; /* Lo acerca un poco al dibujo */
+    opacity: 0.7;
+}
+
+.texto-terror {
+    color: var(--color-rojo-claro);
+    font-weight: bold;
+    text-shadow: var(--sombra-roja);
+}

@@ -1,0 +1,62 @@
+/* ================================================================
+   3. LAYOUT Y ESTRUCTURA PRINCIPAL
+   ================================================================ */
+#pantalla-juego {
+    position: fixed; /* Esto lo saca del flujo normal y lo pega a la pantalla */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #050505; /* Fondo oscuro para tapar lo de abajo */
+    z-index: 100; /* Lo pone por encima de todo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cuando el juego esté oculto, el z-index no importa porque display es none */
+#pantalla-juego.oculto {
+    display: none !important;
+}
+
+#menu-principal {
+    position: relative;
+    z-index: 10; /* Una capa menor que el juego */
+}
+
+/* Barra superior que soluciona el problema de los espacios en PC y Celular */
+.barra-superior {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+    padding: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    z-index: 100;
+}
+
+/* Ocultar elementos sin romper el layout */
+.oculto {
+    display: none !important;
+}
+
+/* ================================================================
+   13. MEDIA QUERIES
+   ================================================================ */
+
+/* Bloqueo de rotación en landscape con pantalla pequeña */
+@media (orientation: landscape) and (max-height: 600px) {
+    #bloqueo-rotacion {
+        display: block;
+    }
+
+    #pantalla-menu,
+    #modal-overlay,
+    .contenedor-juego {
+        display: none;
+    }
+}
